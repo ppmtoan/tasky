@@ -7,6 +7,40 @@ export const APP_ROUTES: Routes = [
     loadComponent: () => import('./home/home.component').then(c => c.HomeComponent),
   },
   {
+    path: 'tenant-signup',
+    loadComponent: () => import('./tenant-signup/tenant-signup.component').then(c => c.TenantSignupComponent),
+  },
+  {
+    path: 'tenant-admin',
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./tenant-admin/tenant-dashboard/tenant-dashboard.component').then(c => c.TenantDashboardComponent),
+      },
+    ]
+  },
+  {
+    path: 'host-admin',
+    children: [
+      {
+        path: 'editions',
+        loadComponent: () => import('./host-admin/editions/editions.component').then(c => c.EditionsComponent),
+      },
+      {
+        path: 'subscriptions',
+        loadComponent: () => import('./host-admin/subscriptions/subscriptions.component').then(c => c.SubscriptionsComponent),
+      },
+      {
+        path: 'invoices',
+        loadComponent: () => import('./host-admin/invoices/invoices.component').then(c => c.InvoicesComponent),
+      },
+    ]
+  },
+  {
+    path: 'tasks',
+    loadComponent: () => import('./tasks/task-list/task-list.component').then(c => c.TaskListComponent),
+  },
+  {
     path: 'account',
     loadChildren: () => import('@volo/abp.ng.account/public').then(c => c.createRoutes()),
   },
