@@ -1,0 +1,264 @@
+<div class="container-fluid mt-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2>Invoices Management</h2>
+      <p class="text-muted">View and manage all tenant invoices</p>
+    </div>
+  </div>
+
+  <!-- Filter and Search Bar -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <div class="btn-group" role="group">
+        @for (filter of statusFilters; track filter.value) {
+          <button 
+            type="button" 
+            class="btn"
+            [ngClass]="selectedStatus() === filter.value ? 'btn-primary' : 'btn-outline-primary'"
+            (click)="onFilterChange(filter.value)"
+          >
+            {{ filter.label }}
+          </button>
+        }
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Search by tenant name or invoice number..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else {
+    @if (filteredInvoices().length === 0) {
+      <div class="alert alert-info">
+        No invoices found.
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Invoice #</th>
+              <th>Tenant</th>
+              <th>Issue Date</th>
+              <th>Due Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (invoice of filteredInvoices(); track invoice.id) {
+              <tr [ngClass]="{'table-danger': isOverdue(invoice)}">
+                <td>
+                  <strong>{{ invoice.invoiceNumber }}</strong>
+                  @if (isOverdue(invoice)) {
+                    <span class="badge bg-danger ms-2">
+                      <i class="fas fa-exclamation-circle me-1"></i>
+                      {{ getDaysOverdue(invoice.dueDate) }} days overdue
+                    </span>
+                  }
+                </td>
+                <td>{{ invoice.tenantName }}</td>
+                <td>{{ invoice.issueDate | date:'mediumDate' }}</td>
+                <td>{{ invoice.dueDate | date:'mediumDate' }}</td>
+                <td>
+                  <strong>{{ invoice.totalAmount.currency }} {{ invoice.totalAmount.amount }}</strong>
+                  @if (invoice.paidAmount) {
+                    <div class="text-muted small">
+                      Paid: {{ invoice.paidAmount.currency }} {{ invoice.paidAmount.amount }}
+                    </div>
+                  }
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(invoice.status)">
+                    {{ invoice.status }}
+                  </span>
+                  @if (invoice.status === 'Paid' && invoice.paidDate) {
+                    <div class="text-muted small">
+                      Paid: {{ invoice.paidDate | date:'short' }}
+                    </div>
+                  }
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm" role="group">
+                    @if (invoice.status === 'Pending' || invoice.status === 'Overdue') {
+                      <button 
+                        class="btn btn-outline-success" 
+                        (click)="openPaymentModal(invoice)"
+                        title="Mark as Paid"
+                      >
+                        <i class="fas fa-check"></i>
+                      </button>
+                    }
+                    <button 
+                      class="btn btn-outline-primary" 
+                      (click)="downloadInvoice(invoice.id)"
+                      title="Download PDF"
+                    >
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h6 class="text-muted">Total Revenue</h6>
+              <h3 class="text-success">
+                ${{ getTotalRevenue().toFixed(2) }}
+              </h3>
+              <p class="text-muted small mb-0">
+                {{ invoices().filter(i => i.status === 'Paid').length }} paid invoices
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h6 class="text-muted">Pending Payments</h6>
+              <h3 class="text-warning">
+                ${{ getTotalPending().toFixed(2) }}
+              </h3>
+              <p class="text-muted small mb-0">
+                {{ invoices().filter(i => i.status === 'Pending').length }} pending invoices
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h6 class="text-muted">Overdue Amount</h6>
+              <h3 class="text-danger">
+                ${{ getTotalOverdue().toFixed(2) }}
+              </h3>
+              <p class="text-muted small mb-0">
+                {{ invoices().filter(i => isOverdue(i)).length }} overdue invoices
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>
+
+<!-- Payment Modal -->
+@if (showPaymentModal()) {
+  <div class="modal-backdrop"></div>
+  <div class="modal d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Mark Invoice as Paid</h5>
+          <button type="button" class="btn-close" (click)="closePaymentModal()"></button>
+        </div>
+        <div class="modal-body">
+          @if (selectedInvoice(); as invoice) {
+            <div class="mb-3">
+              <label class="form-label text-muted">Invoice Number</label>
+              <div><strong>{{ invoice.invoiceNumber }}</strong></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted">Tenant</label>
+              <div>{{ invoice.tenantName }}</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted">Amount</label>
+              <div><strong>{{ invoice.totalAmount.currency }} {{ invoice.totalAmount.amount }}</strong></div>
+            </div>
+
+            <hr />
+
+            <div class="mb-3">
+              <label for="paymentMethod" class="form-label">Payment Method *</label>
+              <select 
+                id="paymentMethod" 
+                class="form-select"
+                [(ngModel)]="paymentDetails().paymentMethod"
+              >
+                <option value="">Select payment method</option>
+                <option value="CreditCard">Credit Card</option>
+                <option value="BankTransfer">Bank Transfer</option>
+                <option value="PayPal">PayPal</option>
+                <option value="Stripe">Stripe</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="transactionId" class="form-label">Transaction ID *</label>
+              <input 
+                type="text" 
+                id="transactionId" 
+                class="form-control"
+                [(ngModel)]="paymentDetails().transactionId"
+                placeholder="Enter transaction ID"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="paymentDate" class="form-label">Payment Date *</label>
+              <input 
+                type="date" 
+                id="paymentDate" 
+                class="form-control"
+                [ngModel]="paymentDetails().paymentDate | date:'yyyy-MM-dd'"
+                (ngModelChange)="paymentDetails().paymentDate = new Date($event)"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="notes" class="form-label">Notes</label>
+              <textarea 
+                id="notes" 
+                class="form-control" 
+                rows="3"
+                [(ngModel)]="paymentDetails().notes"
+                placeholder="Add any additional notes..."
+              ></textarea>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closePaymentModal()">
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-success"
+            (click)="markAsPaid()"
+          >
+            <i class="fas fa-check me-2"></i>
+            Mark as Paid
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

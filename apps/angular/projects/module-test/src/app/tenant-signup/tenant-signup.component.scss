@@ -1,0 +1,13 @@
+.card {
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  
+  &.border-primary {
+    border-width: 2px;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.2);
+  }
+}
+
+.form-check-input:checked ~ .form-check-label {
+  font-weight: 600;
+}

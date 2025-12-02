@@ -1,0 +1,178 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-body p-5">
+          <h2 class="card-title text-center mb-4">Start Your Free Trial</h2>
+          <p class="text-center text-muted mb-4">Create your account and get started in minutes</p>
+
+          @if (success) {
+            <div class="alert alert-success">
+              <h4>Success!</h4>
+              <p>Your account has been created successfully. You will be redirected shortly...</p>
+            </div>
+          } @else {
+            @if (errorMessage) {
+              <div class="alert alert-danger">
+                {{ errorMessage }}
+              </div>
+            }
+
+            @if (loading) {
+              <div class="text-center">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Loading editions...</span>
+                </div>
+              </div>
+            } @else {
+              <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+                <!-- Tenant Name -->
+                <div class="mb-3">
+                  <label for="tenantName" class="form-label">Company Name *</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="tenantName" 
+                    formControlName="tenantName"
+                    [class.is-invalid]="getFieldError('tenantName')"
+                  />
+                  @if (getFieldError('tenantName')) {
+                    <div class="invalid-feedback">
+                      {{ getFieldError('tenantName') }}
+                    </div>
+                  }
+                </div>
+
+                <!-- Admin Email -->
+                <div class="mb-3">
+                  <label for="adminEmail" class="form-label">Admin Email *</label>
+                  <input 
+                    type="email" 
+                    class="form-control" 
+                    id="adminEmail" 
+                    formControlName="adminEmail"
+                    [class.is-invalid]="getFieldError('adminEmail')"
+                  />
+                  @if (getFieldError('adminEmail')) {
+                    <div class="invalid-feedback">
+                      {{ getFieldError('adminEmail') }}
+                    </div>
+                  }
+                </div>
+
+                <!-- Admin Username -->
+                <div class="mb-3">
+                  <label for="adminUserName" class="form-label">Admin Username *</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="adminUserName" 
+                    formControlName="adminUserName"
+                    [class.is-invalid]="getFieldError('adminUserName')"
+                  />
+                  @if (getFieldError('adminUserName')) {
+                    <div class="invalid-feedback">
+                      {{ getFieldError('adminUserName') }}
+                    </div>
+                  }
+                </div>
+
+                <!-- Admin Password -->
+                <div class="mb-3">
+                  <label for="adminPassword" class="form-label">Admin Password *</label>
+                  <input 
+                    type="password" 
+                    class="form-control" 
+                    id="adminPassword" 
+                    formControlName="adminPassword"
+                    [class.is-invalid]="getFieldError('adminPassword')"
+                  />
+                  @if (getFieldError('adminPassword')) {
+                    <div class="invalid-feedback">
+                      {{ getFieldError('adminPassword') }}
+                    </div>
+                  }
+                </div>
+
+                <!-- Edition Selection -->
+                <div class="mb-3">
+                  <label class="form-label">Select Plan *</label>
+                  <div class="row g-2">
+                    @for (edition of editions; track edition.id) {
+                      <div class="col-12">
+                        <div class="card" [class.border-primary]="signupForm.get('editionId')?.value === edition.id">
+                          <div class="card-body">
+                            <div class="form-check">
+                              <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                [id]="'edition-' + edition.id"
+                                [value]="edition.id"
+                                formControlName="editionId"
+                              />
+                              <label class="form-check-label" [for]="'edition-' + edition.id">
+                                <strong>{{ edition.displayName }}</strong>
+                                <p class="mb-1 small text-muted">{{ edition.description }}</p>
+                                <div class="mt-2">
+                                  <span class="badge bg-primary">
+                                    {{ getEditionPrice(edition.id, signupForm.get('billingPeriod')?.value) }}
+                                  </span>
+                                  @if (edition.trialDays > 0) {
+                                    <span class="badge bg-success ms-1">{{ edition.trialDays }} days trial</span>
+                                  }
+                                </div>
+                                @if (edition.featureLimits && Object.keys(edition.featureLimits).length > 0) {
+                                  <div class="mt-2 small">
+                                    @for (feature of Object.keys(edition.featureLimits); track feature) {
+                                      <div>✓ {{ feature }}: {{ edition.featureLimits[feature] }}</div>
+                                    }
+                                  </div>
+                                }
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Billing Period -->
+                <div class="mb-3">
+                  <label class="form-label">Billing Period *</label>
+                  <select class="form-select" formControlName="billingPeriod">
+                    @for (period of billingPeriods; track period.value) {
+                      <option [value]="period.value">{{ period.label }}</option>
+                    }
+                  </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary btn-lg" 
+                    [disabled]="submitting"
+                  >
+                    @if (submitting) {
+                      <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Creating Account...
+                    } @else {
+                      Create Account
+                    }
+                  </button>
+                </div>
+
+                <div class="text-center mt-3">
+                  <small class="text-muted">
+                    Already have an account? <a href="/" class="text-decoration-none">Sign In</a>
+                  </small>
+                </div>
+              </form>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

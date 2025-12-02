@@ -1,0 +1,158 @@
+<div class="container-fluid mt-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2>Subscriptions Management</h2>
+      <p class="text-muted">View and manage all tenant subscriptions</p>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="btn-group" role="group">
+        @for (filter of statusFilters; track filter.value) {
+          <button 
+            type="button" 
+            class="btn"
+            [ngClass]="selectedStatus === filter.value ? 'btn-primary' : 'btn-outline-primary'"
+            (click)="onFilterChange(filter.value)"
+          >
+            {{ filter.label }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else {
+    @if (filteredSubscriptions.length === 0) {
+      <div class="alert alert-info">
+        No subscriptions found.
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Tenant</th>
+              <th>Edition</th>
+              <th>Billing Period</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Auto Renew</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (subscription of filteredSubscriptions; track subscription.id) {
+              <tr [ngClass]="{'table-warning': isExpiringSoon(subscription), 'table-danger': isExpired(subscription)}">
+                <td>
+                  <strong>{{ subscription.tenantName }}</strong>
+                  @if (isExpiringSoon(subscription)) {
+                    <span class="badge bg-warning ms-2">
+                      <i class="fas fa-exclamation-triangle me-1"></i>
+                      {{ getDaysUntilEnd(subscription.endDate) }} days left
+                    </span>
+                  }
+                </td>
+                <td>{{ subscription.editionName }}</td>
+                <td>
+                  <span class="badge bg-secondary">{{ subscription.billingPeriod }}</span>
+                </td>
+                <td>{{ subscription.startDate | date:'mediumDate' }}</td>
+                <td>{{ subscription.endDate | date:'mediumDate' }}</td>
+                <td>
+                  <strong>{{ subscription.price.currency }} {{ subscription.price.amount }}</strong>
+                </td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(subscription.status)">
+                    {{ subscription.status }}
+                  </span>
+                </td>
+                <td>
+                  @if (subscription.autoRenew) {
+                    <i class="fas fa-check text-success"></i>
+                  } @else {
+                    <i class="fas fa-times text-danger"></i>
+                  }
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm" role="group">
+                    @if (subscription.status === 'Active' || subscription.status === 'Trial') {
+                      <button 
+                        class="btn btn-outline-danger" 
+                        (click)="cancelSubscription(subscription.id)"
+                        title="Cancel Subscription"
+                      >
+                        <i class="fas fa-ban"></i>
+                      </button>
+                    }
+                    @if (subscription.status === 'Expired' || subscription.status === 'Cancelled') {
+                      <button 
+                        class="btn btn-outline-success" 
+                        (click)="renewSubscription(subscription.id)"
+                        title="Renew Subscription"
+                      >
+                        <i class="fas fa-redo"></i>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="row mt-4">
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h6 class="text-muted">Total Subscriptions</h6>
+              <h3>{{ subscriptions.length }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h6 class="text-muted">Active</h6>
+              <h3 class="text-success">
+                {{ subscriptions.filter(s => s.status === 'Active').length }}
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h6 class="text-muted">Trial</h6>
+              <h3 class="text-info">
+                {{ subscriptions.filter(s => s.status === 'Trial').length }}
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h6 class="text-muted">Expired</h6>
+              <h3 class="text-danger">
+                {{ subscriptions.filter(s => s.status === 'Expired').length }}
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>
