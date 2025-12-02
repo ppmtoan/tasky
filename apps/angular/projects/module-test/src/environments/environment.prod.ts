@@ -32,9 +32,13 @@ export const environment = {
       url: oAuthConfig.issuer,
       rootNamespace: 'AbpAccountPublic',
     },
+    SaasService: {
+      url: 'https://localhost:44325',
+      rootNamespace: 'ModuleTest.SaasService',
+    },
     ProductService: {
       url: 'https://localhost:44325',
-      rootNamespace: 'ModuleTest',
+      rootNamespace: 'ModuleTest.ProductService',
     },
   },
   remoteEnv: {
