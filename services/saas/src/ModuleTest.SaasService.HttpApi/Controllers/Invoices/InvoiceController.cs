@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ModuleTest.SaasService.Invoices;
 using Volo.Abp;
@@ -12,7 +12,8 @@ namespace ModuleTest.SaasService.Controllers.Invoices;
 
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas-service/invoices")]
+[Route("api/saas/invoices")]
+[AllowAnonymous] // For testing purposes - remove in production
 public class InvoiceController : AbpControllerBase, IInvoiceAppService
 {
     private readonly IInvoiceAppService _invoiceAppService;

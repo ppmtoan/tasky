@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ModuleTest.SaasService.HostAdmin;
 using Volo.Abp;
@@ -11,7 +11,8 @@ namespace ModuleTest.SaasService.Controllers.HostAdmin;
 
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas-service/host-admin")]
+[Route("api/saas/host-admin")]
+[AllowAnonymous] // For testing purposes - remove in production
 public class HostAdminController : AbpControllerBase, IHostAdminAppService
 {
     private readonly IHostAdminAppService _hostAdminAppService;

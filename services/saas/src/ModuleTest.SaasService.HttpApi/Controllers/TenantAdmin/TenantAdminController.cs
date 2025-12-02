@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ModuleTest.SaasService.TenantAdmin;
 using Volo.Abp;
@@ -8,7 +9,8 @@ namespace ModuleTest.SaasService.Controllers.TenantAdmin;
 
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas-service/tenant-admin")]
+[Route("api/saas/tenant-admin")]
+[AllowAnonymous] // For testing purposes - remove in production
 public class TenantAdminController : AbpControllerBase, ITenantAdminAppService
 {
     private readonly ITenantAdminAppService _tenantAdminAppService;
