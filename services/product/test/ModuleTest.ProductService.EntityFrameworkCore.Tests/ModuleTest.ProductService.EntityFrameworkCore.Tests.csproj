@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ModuleTest.ProductService</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="9.3.0" />
+    <ProjectReference Include="..\ModuleTest.ProductService.Application.Tests\ModuleTest.ProductService.Application.Tests.csproj" />
+    <ProjectReference Include="..\..\src\ModuleTest.ProductService.EntityFrameworkCore\ModuleTest.ProductService.EntityFrameworkCore.csproj" />
+  </ItemGroup>
+
+</Project>

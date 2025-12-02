@@ -1,0 +1,10 @@
+{
+  "culture": "hu",
+  "texts": {
+    "AppName": "ModuleTest",
+    "Menu:Home": "Kezdőlap",
+    "Login": "Belépés",
+    "Menu:Dashboard": "Irányítópult",
+    "Welcome": "Üdvözöljük"
+  }
+}

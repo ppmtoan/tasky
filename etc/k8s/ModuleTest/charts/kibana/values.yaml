@@ -1,0 +1,6 @@
+config:
+  elasticsearchUrl: http://moduletest-st-elasticsearch:9200
+
+ingress:
+  host: kibana-moduletest.dev
+  tlsSecret: moduletest-tls

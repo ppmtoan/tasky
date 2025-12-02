@@ -1,0 +1,369 @@
+# auth-server sub-chart override
+authserver:
+  config:
+    selfUrl: https://authserver.moduletest.dev
+    corsOrigins: https://angular.moduletest.dev,https://blazor.moduletest.dev,https://gateway-web.moduletest.dev,https://gateway-public.moduletest.dev,https://identity.moduletest.dev,https://administration.moduletest.dev,https://saas.moduletest.dev,https://product.moduletest.dev
+    allowedRedirectUrls: https://angular.moduletest.dev,http://angular.moduletest.dev,https://blazor.moduletest.dev,http://blazor.moduletest.dev,https://blazor.moduletest.dev,https://blazor-server.moduletest.dev,https://blazor-webapp.moduletest.dev,https://web.moduletest.dev
+    disablePii: "false"
+    identityService:
+      connString: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Identity;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+    administrationService:
+      connString: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Administration;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+    saasService:
+      connString: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Saas;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+    authServer:
+      authority: https://authserver.moduletest.dev
+      requireHttpsMetadata: "false"
+      swaggerClientId: WebGateway_Swagger
+    dotnetEnv: Staging
+    redisHost: moduletest-st-redis
+    rabbitmqHost: moduletest-st-rabbitmq
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+  ingress:
+    host: authserver.moduletest.dev
+  image:
+    repository: mycompanyname/moduletest-app-authserver
+    tag: latest
+
+# identity-service sub-chart override
+identity:
+  config:
+    selfUrl: https://identity.moduletest.dev
+    corsOrigins: https://gateway-web.moduletest.dev
+    connectionStrings:
+      identityService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Identity;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      administrationService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Administration;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      saasService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Saas;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+    authServer:
+      authority: http://moduletest-st-authserver
+      requireHttpsMetadata: "false"
+      metadataAddress: https://authserver.moduletest.dev
+      swaggerClientId: WebGateway_Swagger
+    dotnetEnv: Staging
+    redisHost: moduletest-st-redis
+    rabbitmqHost: moduletest-st-rabbitmq
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+  openIdDict: #Seed applications and resources
+    applications:
+      authServerRootUrl: https://authserver.moduletest.dev
+      angularRootUrl: https://angular.moduletest.dev
+      webRootUrl: https://web.moduletest.dev
+      blazorRootUrl: https://blazor.moduletest.dev
+      blazorServerRootUrl: https://blazor-server.moduletest.dev
+      blazorWebAppRootUrl: https://blazor-webapp.moduletest.dev
+      publicWebRootUrl: https://moduletest.dev
+      webGatewayRootUrl: https://gateway-web.moduletest.dev
+      publicWebGatewayRootUrl: https://gateway-public.moduletest.dev
+    resources:  
+      accountServiceRootUrl: https://authserver.moduletest.dev
+      administrationServiceRootUrl: https://administration.moduletest.dev
+      identityServiceRootUrl: https://identity.moduletest.dev
+      saasServiceRootUrl: https://saas.moduletest.dev
+      productServiceRootUrl: https://product.moduletest.dev
+  ingress:
+    host: identity.moduletest.dev
+  image:
+    repository: mycompanyname/moduletest-service-identity
+    tag: latest
+
+# administration-service sub-chart override
+administration:
+  config:
+    selfUrl: https://administration.moduletest.dev
+    corsOrigins: https://gateway-web.moduletest.dev,https://gateway-public.moduletest.dev
+    connectionStrings:
+      administrationService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Administration;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      saasService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Saas;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"    
+    authServer:
+      authority: http://moduletest-st-authserver
+      requireHttpsMetadata: "false"
+      metadataAddress: https://authserver.moduletest.dev
+      swaggerClientId: WebGateway_Swagger
+    remoteServices:
+      abpIdentityBaseUrl: http://moduletest-st-identity
+      useCurrentToken: "false"   
+    dotnetEnv: Staging
+    redisHost: moduletest-st-redis
+    rabbitmqHost: moduletest-st-rabbitmq
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+  synchedCommunication: # Used for server-to-server (client-credentials) communication with identityService for user permissions
+    authority: http://moduletest-st-authserver
+    requireHttps: "false"
+    validateIssuerName: "false"
+    validateEndpoints: "false"
+  ingress:
+    host: administration.moduletest.dev
+  image:
+    repository: mycompanyname/moduletest-service-administration
+    tag: latest
+
+# saas-service sub-chart override
+saas:
+  config:
+    selfUrl: https://saas.moduletest.dev
+    corsOrigins: https://gateway-web.moduletest.dev
+    connectionStrings:
+      administrationService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Administration;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      saasService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Saas;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+    authServer:
+      authority: http://moduletest-st-authserver
+      requireHttpsMetadata: "false"
+      metadataAddress: https://authserver.moduletest.dev
+      swaggerClientId: WebGateway_Swagger
+    dotnetEnv: Staging
+    redisHost: moduletest-st-redis
+    rabbitmqHost: moduletest-st-rabbitmq
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+  ingress:
+    host: saas.moduletest.dev
+  image:
+    repository: mycompanyname/moduletest-service-saas
+    tag: latest  
+
+# product-service sub-chart override
+product:
+  config:
+    selfUrl: https://product.moduletest.dev
+    corsOrigins: https://gateway-web.moduletest.dev,https://gateway-public.moduletest.dev
+    connectionStrings:
+      productService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_ProductService;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      administrationService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Administration;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      saasService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Saas;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+    authServer:
+      authority: http://moduletest-st-authserver
+      requireHttpsMetadata: "false"
+      metadataAddress: https://authserver.moduletest.dev
+      swaggerClientId: WebGateway_Swagger
+    dotnetEnv: Staging
+    redisHost: moduletest-st-redis
+    rabbitmqHost: moduletest-st-rabbitmq
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+  ingress:
+    host: product.moduletest.dev
+  image:
+    repository: mycompanyname/moduletest-service-product
+    tag: latest
+
+# gateway-web sub-chart override
+gateway-web:
+  config:
+    selfUrl: https://gateway-web.moduletest.dev
+    corsOrigins: https://angular.moduletest.dev,https://blazor.moduletest.dev
+    authServer:
+      authority: http://moduletest-st-authserver
+      requireHttpsMetadata: "false"
+      metadataAddress: https://authserver.moduletest.dev
+      swaggerClientId: WebGateway_Swagger      
+    dotnetEnv: Staging
+    redisHost: moduletest-st-redis
+    rabbitmqHost: moduletest-st-rabbitmq
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+  reRoutes:
+    accountService:
+      url: http://moduletest-st-authserver
+    saasService:
+      url: http://moduletest-st-saas
+    administrationService:
+      url: http://moduletest-st-administration
+    identityService:
+      url: http://moduletest-st-identity
+    productService:
+      url: http://moduletest-st-product
+  ingress:
+    host: gateway-web.moduletest.dev
+  image:
+    repository: mycompanyname/moduletest-gateway-web
+    tag: latest
+    pullPolicy: IfNotPresent
+
+# gateway-web-public sub-chart override
+gateway-web-public:
+  config:
+    selfUrl: https://gateway-public.moduletest.dev
+    authServer:
+      authority: http://moduletest-st-authserver
+      requireHttpsMetadata: "false"
+      metadataAddress: https://authserver.moduletest.dev
+      swaggerClientId: WebGateway_Swagger      
+    dotnetEnv: Staging 
+    redisHost: moduletest-st-redis
+    rabbitmqHost: moduletest-st-rabbitmq
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+  reRoutes:
+    accountService:
+      url: http://moduletest-st-authserver
+    saasService:
+      url: http://moduletest-st-saas
+    administrationService:
+      url: http://moduletest-st-administration
+    productService:
+      url: http://moduletest-st-product  
+  ingress:
+    host: gateway-public.moduletest.dev
+    tlsSecret: moduletest-tls
+  image:
+    repository: mycompanyname/moduletest-gateway-web-public
+    tag: latest
+    pullPolicy: IfNotPresent
+
+kibana:
+  config:
+    elasticsearchUrl: http://moduletest-st-elasticsearch:9200
+  ingress:
+    host: kibana.moduletest.dev
+    tlsSecret: moduletest-tls
+
+# dbmigrator sub-chart override
+dbmigrator:
+  config:
+    connectionStrings:
+      identityService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Identity;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      administrationService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Administration;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      saasService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_Saas;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+      productService: "Server=moduletest-st-sqldb,1433;Database=ModuleTest_ProductService;User Id=sa;password=myPassw@rd;TrustServerCertificate=True"
+    dotnetEnv: Staging
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+    redisHost: moduletest-st-redis
+  openIdDict:
+    applications:
+      authServerRootUrl: https://authserver.moduletest.dev
+      angularRootUrl: https://angular.moduletest.dev
+      webRootUrl: https://web.moduletest.dev
+      blazorRootUrl: https://blazor.moduletest.dev
+      blazorServerRootUrl: https://blazor-server.moduletest.dev
+      blazorWebAppRootUrl: https://blazor-webapp.moduletest.dev
+      publicWebRootUrl: https://moduletest.dev
+      webGatewayRootUrl: https://gateway-web.moduletest.dev
+      publicWebGatewayRootUrl: https://gateway-public.moduletest.dev
+    resources:  
+      accountServiceRootUrl: https://authserver.moduletest.dev
+      administrationServiceRootUrl: https://administration.moduletest.dev
+      identityServiceRootUrl: https://identity.moduletest.dev
+      saasServiceRootUrl: https://saas.moduletest.dev
+      productServiceRootUrl: https://product.moduletest.dev
+  image:
+    repository: mycompanyname/moduletest-db-migrator
+    tag: latest
+    pullPolicy: IfNotPresent  
+
+# Public Web application sub-chart override
+publicweb:
+  config:
+    selfUrl: https://moduletest.dev
+    gatewayUrl: http://moduletest-st-gateway-web-public
+    authServer:
+      authority: https://authserver.moduletest.dev # should be domain on production (https://auth.mydomain.com)
+      requireHttpsMetadata: "false"
+      isOnK8s: "true"
+      metaAddress: http://moduletest-st-authserver # should be container on production (http://moduletest-az-authserver)
+    dotnetEnv: Staging 
+    redisHost: moduletest-st-redis
+    rabbitmqHost: moduletest-st-rabbitmq
+    elasticsearchUrl: http://moduletest-st-elasticsearch
+  ingress:
+    host: moduletest.dev
+    tlsSecret: moduletest-tls
+  image:
+    repository: mycompanyname/moduletest-app-public-web
+    tag: latest
+    pullPolicy: IfNotPresent
+# Angular back-office application sub-chart override
+angular:
+  config:
+    selfUrl: https://angular.moduletest.dev
+    gatewayUrl: https://gateway-web.moduletest.dev
+    authServer:
+      authority: https://authserver.moduletest.dev
+      requireHttpsMetadata: "false"
+      responseType: "code"
+      strictDiscoveryDocumentValidation: false
+      skipIssuerCheck: true
+  ingress:
+    host: angular.moduletest.dev
+    tlsSecret: moduletest-tls
+  image:
+    repository: mycompanyname/moduletest-app-angular
+    tag: latest
+    pullPolicy: IfNotPresent
+# Default values for ModuleTest.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

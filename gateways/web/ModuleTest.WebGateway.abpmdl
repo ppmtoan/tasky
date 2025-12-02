@@ -1,0 +1,14 @@
+{
+  "folders": {
+    "items": {
+      "src": {}
+    }
+  },
+  "packages": {
+    "ModuleTest.WebGateway": {
+      "path": "src/ModuleTest.WebGateway/ModuleTest.WebGateway.abppkg",
+      "folder": "src"
+    }
+  },
+  "moduleId": "3a1a89f8-abc8-6358-56c1-067fb507a459"
+}

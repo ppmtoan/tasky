@@ -1,0 +1,18 @@
+config:
+  selfUrl: # https://blazor.moduletest.dev
+  gatewayUrl: # https://gateway-web.moduletest.dev
+  authServer:
+      authority: # https://moduletest-st-authserver
+      responseType: "code"
+  AbpLicenseCode: #
+
+ingress:
+  host: # blazor.moduletest.dev
+  tlsSecret: moduletest-tls
+
+image:
+  repository: mycompanyname/moduletest-app-blazor
+  tag: latest
+  pullPolicy: IfNotPresent
+
+env: {}

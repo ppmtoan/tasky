@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\..\..\common.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ModuleTest.SaasService</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+		<PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="9.3.0" />
+        <ProjectReference Include="..\ModuleTest.SaasService.Application.Contracts\ModuleTest.SaasService.Application.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Saas.Host.HttpApi" Version="9.3.0" />
+        <PackageReference Include="Volo.Saas.Tenant.HttpApi" Version="9.3.0" />
+    </ItemGroup>
+
+</Project>

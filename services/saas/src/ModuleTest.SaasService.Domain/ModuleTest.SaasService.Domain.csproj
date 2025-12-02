@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\..\..\common.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ModuleTest.SaasService</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Ddd.Domain" Version="9.3.0" />
+        <PackageReference Include="Volo.Abp.Identity.Domain" Version="9.3.0" />
+        <PackageReference Include="Volo.Saas.Domain" Version="9.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ModuleTest.SaasService.Domain.Shared\ModuleTest.SaasService.Domain.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

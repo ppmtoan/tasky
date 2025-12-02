@@ -1,0 +1,25 @@
+config:
+  selfUrl: # https://blazor-server.moduletest.dev
+  gatewayUrl: # http://moduletest-st-gateway-web
+  authServer:
+    authority: # http://moduletest-st-authserver
+    requireHttpsMetadata: # "false"
+    isOnK8s: # "true"
+    metaAddress: # http://moduletest-st-authserver
+  dotnetEnv: # 
+  redisHost: #
+  rabbitmqHost: #
+  elasticsearchUrl: #
+  stringEncryptionDefaultPassPhrase: gsKnGZ041HLL4IM8
+  AbpLicenseCode: #
+
+ingress:
+  host: # blazor-server.moduletest.dev
+  tlsSecret: moduletest-tls
+
+image:
+  repository: mycompanyname/moduletest-app-blazor-server
+  tag: latest
+  pullPolicy: IfNotPresent
+
+env: {}   

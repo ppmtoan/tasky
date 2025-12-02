@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ModuleTest.Shared.Hosting.AspNetCore</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Swashbuckle" Version="9.3.0" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="9.3.0" />
+        <ProjectReference Include="..\ModuleTest.Shared.Hosting\ModuleTest.Shared.Hosting.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,59 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "ModuleTest.SaasService.HttpApi": {
+      "path": "src/ModuleTest.SaasService.HttpApi/ModuleTest.SaasService.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.SaasService.Application.Contracts": {
+      "path": "src/ModuleTest.SaasService.Application.Contracts/ModuleTest.SaasService.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.SaasService.Application": {
+      "path": "src/ModuleTest.SaasService.Application/ModuleTest.SaasService.Application.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.SaasService.Domain.Shared": {
+      "path": "src/ModuleTest.SaasService.Domain.Shared/ModuleTest.SaasService.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.SaasService.Domain": {
+      "path": "src/ModuleTest.SaasService.Domain/ModuleTest.SaasService.Domain.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.SaasService.EntityFrameworkCore": {
+      "path": "src/ModuleTest.SaasService.EntityFrameworkCore/ModuleTest.SaasService.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.SaasService.HttpApi.Client": {
+      "path": "src/ModuleTest.SaasService.HttpApi.Client/ModuleTest.SaasService.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.SaasService.HttpApi.Host": {
+      "path": "src/ModuleTest.SaasService.HttpApi.Host/ModuleTest.SaasService.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.SaasService.TestBase": {
+      "path": "test/ModuleTest.SaasService.TestBase/ModuleTest.SaasService.TestBase.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.SaasService.Domain.Tests": {
+      "path": "test/ModuleTest.SaasService.Domain.Tests/ModuleTest.SaasService.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.SaasService.EntityFrameworkCore.Tests": {
+      "path": "test/ModuleTest.SaasService.EntityFrameworkCore.Tests/ModuleTest.SaasService.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.MicroserviceName.Application.Tests": {
+      "path": "test/ModuleTest.SaasService.Application.Tests/ModuleTest.SaasService.Application.Tests.abppkg",
+      "folder": "test"
+    }
+  },
+  "moduleId": "3a1a89f8-abc8-6358-56c1-067fb507a459"
+}

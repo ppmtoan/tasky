@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ModuleTest.AdministrationService</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ModuleTest.AdministrationService.Domain\ModuleTest.AdministrationService.Domain.csproj" />
+    <ProjectReference Include="..\ModuleTest.AdministrationService.TestBase\ModuleTest.AdministrationService.TestBase.csproj" />
+  </ItemGroup>
+
+</Project>

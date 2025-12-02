@@ -1,0 +1,58 @@
+{
+  "applications": {
+    "Docker-Dependencies": {
+      "type": "cli",
+      "workingDirectory": "../docker",
+      "startCommand": "./up.ps1",
+      "stopCommand": "./down.ps1"
+    },
+    "ModuleTest.AuthServer": {
+      "type": "dotnet-project",
+      "path": "../../apps/auth-server/src/ModuleTest.AuthServer/ModuleTest.AuthServer.csproj"
+    },
+    "ModuleTest.Blazor": {
+      "type": "dotnet-project",
+      "path": "../../apps/blazor/src/ModuleTest.Blazor/ModuleTest.Blazor.csproj"
+    },
+    "ModuleTest.Blazor.Server": {
+      "type": "dotnet-project",
+      "path": "../../apps/blazor/src/ModuleTest.Blazor.Server/ModuleTest.Blazor.Server.csproj"
+    },
+    "ModuleTest.Blazor.WebApp": {
+      "type": "dotnet-project",
+      "path": "../../apps/blazor/src/ModuleTest.Blazor.WebApp/ModuleTest.Blazor.WebApp.csproj"
+    },
+    "ModuleTest.PublicWeb": {
+      "type": "dotnet-project",
+      "path": "../../apps/public-web/src/ModuleTest.PublicWeb/ModuleTest.PublicWeb.csproj"
+    },
+    "ModuleTest.Web": {
+      "type": "dotnet-project",
+      "path": "../../apps/web/src/ModuleTest.Web/ModuleTest.Web.csproj"
+    },
+    "ModuleTest.AdministrationService.HttpApi.Host": {
+      "type": "dotnet-project",
+      "path": "../../services/administration/src/ModuleTest.AdministrationService.HttpApi.Host/ModuleTest.AdministrationService.HttpApi.Host.csproj"
+    },
+    "ModuleTest.IdentityService.HttpApi.Host": {
+      "type": "dotnet-project",
+      "path": "../../services/identity/src/ModuleTest.IdentityService.HttpApi.Host/ModuleTest.IdentityService.HttpApi.Host.csproj"
+    },
+    "ModuleTest.ProductService.HttpApi.Host": {
+      "type": "dotnet-project",
+      "path": "../../services/product/src/ModuleTest.ProductService.HttpApi.Host/ModuleTest.ProductService.HttpApi.Host.csproj"
+    },
+    "ModuleTest.SaasService.HttpApi.Host": {
+      "type": "dotnet-project",
+      "path": "../../services/saas/src/ModuleTest.SaasService.HttpApi.Host/ModuleTest.SaasService.HttpApi.Host.csproj"
+    },
+    "ModuleTest.WebGateway": {
+      "type": "dotnet-project",
+      "path": "../../gateways/web/src/ModuleTest.WebGateway/ModuleTest.WebGateway.csproj"
+    },
+    "ModuleTest.PublicWebGateway": {
+      "type": "dotnet-project",
+      "path": "../../gateways/web-public/src/ModuleTest.PublicWebGateway/ModuleTest.PublicWebGateway.csproj"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+config:
+  selfUrl: # https://gateway-public.moduletest.dev
+  corsOrigins: # https://moduletest-st-gateway-web,https://moduletest-st-gateway-public-web
+  authServer:
+    authority: # http://moduletest-st-authserver
+    requireHttpsMetadata: # "false"
+    metadataAddress: # https://authserver.moduletest.dev/.well-known/openid-configuration
+    swaggerClientId: # WebGateway_Swagger
+  dotnetEnv: Staging 
+  redisHost: #
+  rabbitmqHost: #
+  elasticsearchUrl: #
+  AbpLicenseCode: #
+
+reRoutes:
+  accountService:
+    url: http://moduletest-st-authserver
+  saasService:
+    url: http://saas-st-administration
+  administrationService:
+    url: http://moduletest-st-administration
+  productService:
+    url: http://moduletest-st-product
+
+ingress:
+  host: gateway-public.moduletest.dev
+  tlsSecret: moduletest-tls
+
+image:
+  repository: mycompanyname/moduletest-gateway-web-public
+  tag: latest
+  pullPolicy: IfNotPresent
+
+env: {}
+    

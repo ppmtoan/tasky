@@ -1,0 +1,59 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "ModuleTest.AdministrationService.HttpApi": {
+      "path": "src/ModuleTest.AdministrationService.HttpApi/ModuleTest.AdministrationService.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.AdministrationService.Application.Contracts": {
+      "path": "src/ModuleTest.AdministrationService.Application.Contracts/ModuleTest.AdministrationService.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.AdministrationService.Application": {
+      "path": "src/ModuleTest.AdministrationService.Application/ModuleTest.AdministrationService.Application.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.AdministrationService.Domain.Shared": {
+      "path": "src/ModuleTest.AdministrationService.Domain.Shared/ModuleTest.AdministrationService.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.AdministrationService.Domain": {
+      "path": "src/ModuleTest.AdministrationService.Domain/ModuleTest.AdministrationService.Domain.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.AdministrationService.EntityFrameworkCore": {
+      "path": "src/ModuleTest.AdministrationService.EntityFrameworkCore/ModuleTest.AdministrationService.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.AdministrationService.HttpApi.Client": {
+      "path": "src/ModuleTest.AdministrationService.HttpApi.Client/ModuleTest.AdministrationService.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.AdministrationService.HttpApi.Host": {
+      "path": "src/ModuleTest.AdministrationService.HttpApi.Host/ModuleTest.AdministrationService.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.AdministrationService.TestBase": {
+      "path": "test/ModuleTest.AdministrationService.TestBase/ModuleTest.AdministrationService.TestBase.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.AdministrationService.Domain.Tests": {
+      "path": "test/ModuleTest.AdministrationService.Domain.Tests/ModuleTest.AdministrationService.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.AdministrationService.EntityFrameworkCore.Tests": {
+      "path": "test/ModuleTest.AdministrationService.EntityFrameworkCore.Tests/ModuleTest.AdministrationService.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.AdministrationService.Application.Tests": {
+      "path": "test/ModuleTest.AdministrationService.Application.Tests/ModuleTest.AdministrationService.Application.Tests.abppkg",
+      "folder": "test"
+    }
+  },
+  "moduleId": "3a1a89f8-abc8-6358-56c1-067fb507a459"
+}

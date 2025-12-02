@@ -1,0 +1,58 @@
+name: ModuleTest
+services:
+- name: auth-server
+  project: apps/auth-server/src/ModuleTest.AuthServer/ModuleTest.AuthServer.csproj
+  bindings:
+    - protocol: https
+      port: 44322
+  env:
+    - Kestrel__Certificates__Default__Path=../../../../etc/dev-cert/localhost.pfx
+    - Kestrel__Certificates__Default__Password=e3db6da5-303d-40d2-85c1-0c64aaef767a
+- name: administration-service
+  project: services/administration/src/ModuleTest.AdministrationService.HttpApi.Host/ModuleTest.AdministrationService.HttpApi.Host.csproj
+  bindings:
+    - protocol: https
+      port: 44367
+  env:
+    - Kestrel__Certificates__Default__Path=../../../../etc/dev-cert/localhost.pfx
+    - Kestrel__Certificates__Default__Password=e3db6da5-303d-40d2-85c1-0c64aaef767a
+- name: identity-service
+  project: services/identity/src/ModuleTest.IdentityService.HttpApi.Host/ModuleTest.IdentityService.HttpApi.Host.csproj
+  bindings:
+    - protocol: https
+      port: 44388
+  env:
+    - Kestrel__Certificates__Default__Path=../../../../etc/dev-cert/localhost.pfx
+    - Kestrel__Certificates__Default__Password=e3db6da5-303d-40d2-85c1-0c64aaef767a
+- name: saas-service
+  project: services/saas/src/ModuleTest.SaasService.HttpApi.Host/ModuleTest.SaasService.HttpApi.Host.csproj
+  bindings:
+    - protocol: https
+      port: 44381
+  env:
+    - Kestrel__Certificates__Default__Path=../../../../etc/dev-cert/localhost.pfx
+    - Kestrel__Certificates__Default__Password=e3db6da5-303d-40d2-85c1-0c64aaef767a
+- name: product-service
+  project: services/product/src/ModuleTest.ProductService.HttpApi.Host/ModuleTest.ProductService.HttpApi.Host.csproj
+  bindings:
+    - protocol: https
+      port: 44361
+  env:
+    - Kestrel__Certificates__Default__Path=../../../../etc/dev-cert/localhost.pfx
+    - Kestrel__Certificates__Default__Password=e3db6da5-303d-40d2-85c1-0c64aaef767a
+- name: web-gateway
+  project: gateways/web/src/ModuleTest.WebGateway/ModuleTest.WebGateway.csproj
+  bindings:
+    - protocol: https
+      port: 44325
+  env:
+    - Kestrel__Certificates__Default__Path=../../../../etc/dev-cert/localhost.pfx
+    - Kestrel__Certificates__Default__Password=e3db6da5-303d-40d2-85c1-0c64aaef767a  
+- name: web-public-gateway
+  project: gateways/web-public/src/ModuleTest.PublicWebGateway/ModuleTest.PublicWebGateway.csproj
+  bindings:
+    - protocol: https
+      port: 44353
+  env:
+    - Kestrel__Certificates__Default__Path=../../../../etc/dev-cert/localhost.pfx
+    - Kestrel__Certificates__Default__Password=e3db6da5-303d-40d2-85c1-0c64aaef767a

@@ -1,0 +1,10 @@
+{
+  "culture": "fi",
+  "texts": {
+    "AppName": "ModuleTest",
+    "Menu:Home": "Koti",
+    "Login": "Kirjaudu sisään",
+    "Menu:Dashboard": "Kojelauta",
+    "Welcome": "Tervetuloa"
+  }
+}

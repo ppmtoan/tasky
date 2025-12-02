@@ -1,0 +1,30 @@
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
+WORKDIR /src
+
+COPY "ModuleTest.sln" "ModuleTest.sln"
+
+# Applications
+COPY "apps/auth-server/src/ModuleTest.AuthServer/ModuleTest.AuthServer.csproj" "apps/auth-server/src/ModuleTest.AuthServer/ModuleTest.AuthServer.csproj"
+COPY "apps/public-web/src/ModuleTest.PublicWeb/ModuleTest.PublicWeb.csproj" "apps/public-web/src/ModuleTest.PublicWeb/ModuleTest.PublicWeb.csproj"
+# Shared Projects
+COPY "shared/ModuleTest.DbMigrator/ModuleTest.DbMigrator.csproj" "shared/ModuleTest.DbMigrator/ModuleTest.DbMigrator.csproj"
+COPY "shared/ModuleTest.Shared.Hosting/ModuleTest.Shared.Hosting.csproj" "shared/ModuleTest.Shared.Hosting/ModuleTest.Shared.Hosting.csproj"
+COPY "shared/ModuleTest.Shared.Hosting.Gateways/ModuleTest.Shared.Hosting.Gateways.csproj" "shared/ModuleTest.Shared.Hosting.Gateways/ModuleTest.Shared.Hosting.Gateways.csproj"
+COPY "shared/ModuleTest.Shared.Hosting.Microservices/ModuleTest.Shared.Hosting.Microservices.csproj" "shared/ModuleTest.Shared.Hosting.Microservices/ModuleTest.Shared.Hosting.Microservices.csproj"
+COPY "shared/ModuleTest.Shared.Hosting.AspNetCore/ModuleTest.Shared.Hosting.AspNetCore.csproj" "shared/ModuleTest.Shared.Hosting.AspNetCore/ModuleTest.Shared.Hosting.AspNetCore.csproj"
+COPY "shared/ModuleTest.Shared.Hosting/ModuleTest.Shared.Hosting.csproj" "shared/ModuleTest.Shared.Hosting/ModuleTest.Shared.Hosting.csproj"
+COPY "shared/ModuleTest.Shared.Localization/ModuleTest.Shared.Localization.csproj" "shared/ModuleTest.Shared.Localization/ModuleTest.Shared.Localization.csproj"
+
+# Microservices
+COPY "services/administration/src/ModuleTest.AdministrationService.HttpApi.Host/ModuleTest.AdministrationService.HttpApi.Host.csproj" "services/administration/src/ModuleTest.AdministrationService.HttpApi.Host/ModuleTest.AdministrationService.HttpApi.Host.csproj"
+COPY "services/identity/src/ModuleTest.IdentityService.HttpApi.Host/ModuleTest.IdentityService.HttpApi.Host.csproj" "services/identity/src/ModuleTest.IdentityService.HttpApi.Host/ModuleTest.IdentityService.HttpApi.Host.csproj"
+COPY "services/saas/src/ModuleTest.SaasService.HttpApi.Host/ModuleTest.SaasService.HttpApi.Host.csproj" "services/saas/src/ModuleTest.SaasService.HttpApi.Host/ModuleTest.SaasService.HttpApi.Host.csproj"
+COPY "services/product/src/ModuleTest.ProductService.HttpApi.Host/ModuleTest.ProductService.HttpApi.Host.csproj" "services/product/src/ModuleTest.ProductService.HttpApi.Host/ModuleTest.ProductService.HttpApi.Host.csproj"
+# Gateways
+COPY "gateways/web/src/ModuleTest.WebGateway/ModuleTest.WebGateway.csproj" "gateways/web/src/ModuleTest.WebGateway/ModuleTest.WebGateway.csproj"
+COPY "gateways/web-public/src/ModuleTest.PublicWebGateway/ModuleTest.PublicWebGateway.csproj" "gateways/web-public/src/ModuleTest.PublicWebGateway/ModuleTest.PublicWebGateway.csproj"
+
+COPY "NuGet.Config" "NuGet.Config"
+
+RUN dotnet restore "ModuleTest.sln"

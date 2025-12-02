@@ -1,0 +1,10 @@
+{
+  "culture": "hr",
+  "texts": {
+    "AppName": "ModuleTest",
+    "Menu:Home": "Dom",
+    "Login": "Prijaviti se",
+    "Menu:Dashboard": "Nadzorna ploča",
+    "Welcome": "Dobrodošli"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "folders": {
+    "items": {
+      "src": {}
+    }
+  },
+  "packages": {
+    "ModuleTest.AuthServer": {
+      "path": "src/ModuleTest.AuthServer/ModuleTest.AuthServer.abppkg",
+      "folder": "src"
+    }
+  },
+  "moduleId": "3a1a89f8-abc8-6358-56c1-067fb507a459"
+}

@@ -1,0 +1,169 @@
+{
+  "folders": {
+    "src": {},
+    "test": {}
+  },
+  "packages": {
+    "ModuleTest.ProductService.Domain.Shared": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.Domain.Shared/ModuleTest.ProductService.Domain.Shared.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.domain.shared": {}
+      }      
+    },
+    "ModuleTest.ProductService.Domain": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.Domain/ModuleTest.ProductService.Domain.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.domain": {}
+      },
+      "contents": {
+        "aggregates": {
+          "ModuleTest.ProductService.Products.Product": {
+            "keyType": "Guid",
+            "summary": "Represents a product.",
+            "collectionProperties": {},
+            "navigationProperties": {}
+          } 
+        },
+        "repositoryInterfaces": {
+          "ModuleTest.ProductService.Products.IProductRepository": {
+            "entity": {
+              "type": "ModuleTest.ProductService.Products.Product",
+              "package": "ModuleTest.ProductService.Domain"
+            }
+          }
+        }
+      }
+    },
+    "ModuleTest.ProductService.Application.Contracts": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.Application.Contracts/ModuleTest.ProductService.Application.Contracts.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.application.contracts": {}
+      }
+    },
+    "ModuleTest.ProductService.Application": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.Application/ModuleTest.ProductService.Application.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.application": {}
+      },
+      "contents": {
+        "applicationServices": {
+          "ModuleTest.ProductService.ProductAppService": {}
+        }
+      }
+    },
+    "ModuleTest.ProductService.EntityFrameworkCore": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.EntityFrameworkCore/ModuleTest.ProductService.EntityFrameworkCore.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.ef": {}
+      },
+      "contents": {
+        "efDbContexts": {
+          "ModuleTest.ProductService.EntityFrameworkCore.ProductServiceDbContext": {
+            "entities": {
+              "ModuleTest.ProductService.Products.Product": {
+                "package": "ModuleTest.ProductService.Domain",
+                "dbSetPropertyOnDbContext": "Products",
+                "databaseTable": "Products" 
+              }
+            }
+          }
+        }
+      }
+    },
+    "ModuleTest.ProductService.HttpApi": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.HttpApi/ModuleTest.ProductService.HttpApi.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.http-api": {}
+      },
+      "contents": {
+        "controllers": {
+          "ModuleTest.ProductService.Products.ProductController": {},
+          "ModuleTest.ProductService.Products.ProductPublicController": {}
+        }
+      }
+    },
+    "ModuleTest.ProductService.HttpApi.Client": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.HttpApi.Client/ModuleTest.ProductService.HttpApi.Client.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.http-api-client": {}
+      }
+    },
+    "ModuleTest.ProductService.Web": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.Web/ModuleTest.ProductService.Web.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.ui.mvc": {}
+      },
+      "contents": {
+        "mvcPages": {
+          "ModuleTest.ProductService.Web.Pages.Products.Index.cshtml": {},
+          "ModuleTest.ProductService.Web.Pages.Products.CreateModal.cshtml": {},
+          "ModuleTest.ProductService.Web.Pages.Products.EditModal.cshtml": {}
+        }
+      }
+    },
+    "ModuleTest.ProductService.Blazor": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.Blazor/ModuleTest.ProductService.Blazor.csproj",
+      "folder": "src",
+      "includes": {
+        "lib.ui.blazor": {}
+      }
+    },
+    "ModuleTest.ProductService.HttpApi.Host": {
+      "type": "dotnet-project",
+      "path": "src/ModuleTest.ProductService.HttpApi.Host/ModuleTest.ProductService.HttpApi.Host.csproj",
+      "folder": "src",
+      "includes": {
+        "host.http-api": {}
+      }
+    },
+    "ModuleTest.ProductService.TestBase": {
+      "type": "dotnet-project",
+      "path": "test/ModuleTest.ProductService.TestBase/ModuleTest.ProductService.TestBase.csproj",
+      "folder": "test",
+      "includes": {
+        "lib.test": {}
+      }
+    },
+    "ModuleTest.ProductService.Domain.Tests": {
+      "type": "dotnet-project",
+      "path": "test/ModuleTest.ProductService.Domain.Tests/ModuleTest.ProductService.Domain.Tests.csproj",
+      "folder": "test",
+      "includes": {
+        "lib.test": {}
+      }
+    },
+    "ModuleTest.ProductService.EntityFrameworkCore.Tests": {
+      "type": "dotnet-project",
+      "path": "test/ModuleTest.ProductService.EntityFrameworkCore.Tests/ModuleTest.ProductService.EntityFrameworkCore.Tests.csproj",
+      "folder": "test",
+      "includes": {
+        "lib.test": {}
+      }
+    },
+    "ModuleTest.ProductService.Application.Tests": {
+      "type": "dotnet-project",
+      "path": "test/ModuleTest.ProductService.Application.Tests/ModuleTest.ProductService.Application.Tests.csproj",
+      "folder": "test",
+      "includes": {
+        "lib.test": {}
+      }
+    }
+  }
+}

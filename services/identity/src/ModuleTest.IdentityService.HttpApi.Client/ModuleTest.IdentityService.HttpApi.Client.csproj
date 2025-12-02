@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\..\..\common.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ModuleTest.IdentityService</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Identity.Pro.HttpApi.Client" Version="9.3.0" />
+        <PackageReference Include="Volo.Abp.OpenIddict.Pro.HttpApi.Client" Version="9.3.0" />
+        <PackageReference Include="Volo.Abp.Account.Pro.Admin.HttpApi.Client" Version="9.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ModuleTest.IdentityService.Application.Contracts\ModuleTest.IdentityService.Application.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>

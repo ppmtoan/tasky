@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ModuleTest.ProductService</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="9.3.0" />
+    <PackageReference Include="Volo.Abp.AutoMapper" Version="9.3.0" />
+    <ProjectReference Include="..\ModuleTest.ProductService.Application.Contracts\ModuleTest.ProductService.Application.Contracts.csproj" />
+    <ProjectReference Include="..\ModuleTest.ProductService.Domain\ModuleTest.ProductService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

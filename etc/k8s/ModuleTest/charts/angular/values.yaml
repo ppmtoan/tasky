@@ -1,0 +1,21 @@
+config:
+  selfUrl: # https://angular.moduletest.dev
+  gatewayUrl: # https://gateway-web.moduletest.dev
+  authServer:
+      authority: # https://authserver.moduletest.dev
+      requireHttpsMetadata: # false
+      responseType: "code"
+      strictDiscoveryDocumentValidation: false
+      skipIssuerCheck: true
+  AbpLicenseCode: #
+
+ingress:
+  host: # angular.moduletest.dev
+  tlsSecret: moduletest-tls
+
+image:
+  repository: mycompanyname/moduletest-app-angular
+  tag: latest
+  pullPolicy: IfNotPresent
+
+env: {}

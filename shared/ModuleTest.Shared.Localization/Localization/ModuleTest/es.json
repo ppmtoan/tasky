@@ -1,0 +1,10 @@
+{
+  "culture": "es",
+  "texts": {
+    "AppName": "ModuleTest",
+    "Menu:Home": "Hogar",
+    "Login": "Acceso",
+    "Menu:Dashboard": "Tablero",
+    "Welcome": "Bienvenido a ModuleTest"
+  }
+}

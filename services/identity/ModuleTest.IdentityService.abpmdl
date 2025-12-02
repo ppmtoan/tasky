@@ -1,0 +1,59 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "ModuleTest.IdentityService.HttpApi": {
+      "path": "src/ModuleTest.IdentityService.HttpApi/ModuleTest.IdentityService.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.IdentityService.Application": {
+      "path": "src/ModuleTest.IdentityService.Application/ModuleTest.IdentityService.Application.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.IdentityService.Domain": {
+      "path": "src/ModuleTest.IdentityService.Domain/ModuleTest.IdentityService.Domain.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.IdentityService.Domain.Shared": {
+      "path": "src/ModuleTest.IdentityService.Domain.Shared/ModuleTest.IdentityService.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.IdentityService.EntityFrameworkCore": {
+      "path": "src/ModuleTest.IdentityService.EntityFrameworkCore/ModuleTest.IdentityService.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.IdentityService.HttpApi.Client": {
+      "path": "src/ModuleTest.IdentityService.HttpApi.Client/ModuleTest.IdentityService.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.IdentityService.Application.Contracts": {
+      "path": "src/ModuleTest.IdentityService.Application.Contracts/ModuleTest.IdentityService.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.IdentityService.HttpApi.Host": {
+      "path": "src/ModuleTest.IdentityService.HttpApi.Host/ModuleTest.IdentityService.HttpApi.Host.abppkg",
+      "folder": "src"
+    },
+    "ModuleTest.IdentityService.TestBase": {
+      "path": "test/ModuleTest.IdentityService.TestBase/ModuleTest.IdentityService.TestBase.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.IdentityService.Domain.Tests": {
+      "path": "test/ModuleTest.IdentityService.Domain.Tests/ModuleTest.IdentityService.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.IdentityService.EntityFrameworkCore.Tests": {
+      "path": "test/ModuleTest.IdentityService.EntityFrameworkCore.Tests/ModuleTest.IdentityService.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "ModuleTest.IdentityService.Application.Tests": {
+      "path": "test/ModuleTest.IdentityService.Application.Tests/ModuleTest.IdentityService.Application.Tests.abppkg",
+      "folder": "test"
+    }
+  },
+  "moduleId": "3a1a89f8-abc8-6358-56c1-067fb507a459"
+}

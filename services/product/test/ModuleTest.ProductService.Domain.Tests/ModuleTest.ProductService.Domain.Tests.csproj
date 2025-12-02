@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ModuleTest.ProductService</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ModuleTest.ProductService.Domain\ModuleTest.ProductService.Domain.csproj" />
+    <ProjectReference Include="..\ModuleTest.ProductService.TestBase\ModuleTest.ProductService.TestBase.csproj" />
+  </ItemGroup>
+
+</Project>
