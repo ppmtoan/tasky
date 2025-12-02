@@ -1,0 +1,379 @@
+<div class="container-fluid mt-4">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h2>Task Management</h2>
+      <p class="text-muted">Manage and track your team's tasks</p>
+    </div>
+    <div class="col-md-4 text-end">
+      <button class="btn btn-primary" (click)="openCreateModal()">
+        <i class="fas fa-plus me-2"></i>
+        Create Task
+      </button>
+    </div>
+  </div>
+
+  <!-- View Mode Tabs -->
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a 
+        class="nav-link" 
+        [ngClass]="{'active': viewMode() === 'my-tasks'}"
+        (click)="onViewModeChange('my-tasks')"
+        style="cursor: pointer;"
+      >
+        <i class="fas fa-user me-2"></i>
+        My Tasks
+      </a>
+    </li>
+    <li class="nav-item">
+      <a 
+        class="nav-link" 
+        [ngClass]="{'active': viewMode() === 'created-by-me'}"
+        (click)="onViewModeChange('created-by-me')"
+        style="cursor: pointer;"
+      >
+        <i class="fas fa-plus-circle me-2"></i>
+        Created by Me
+      </a>
+    </li>
+    <li class="nav-item">
+      <a 
+        class="nav-link" 
+        [ngClass]="{'active': viewMode() === 'all'}"
+        (click)="onViewModeChange('all')"
+        style="cursor: pointer;"
+      >
+        <i class="fas fa-list me-2"></i>
+        All Tasks
+      </a>
+    </li>
+  </ul>
+
+  <!-- Filters and Search -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <div class="btn-group" role="group">
+        @for (filter of statusFilters.slice(0, 5); track filter.value) {
+          <button 
+            type="button" 
+            class="btn btn-sm"
+            [ngClass]="selectedStatus() === filter.value ? 'btn-primary' : 'btn-outline-primary'"
+            (click)="onStatusFilterChange(filter.value)"
+          >
+            {{ filter.label }}
+          </button>
+        }
+      </div>
+    </div>
+    <div class="col-md-3">
+      <select 
+        class="form-select form-select-sm"
+        [ngModel]="selectedPriority()"
+        (ngModelChange)="onPriorityFilterChange($event)"
+      >
+        @for (filter of priorityFilters; track filter.value) {
+          <option [value]="filter.value">{{ filter.label }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-md-5">
+      <div class="input-group input-group-sm">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Search tasks..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-2">
+      <div class="stat-card">
+        <div class="stat-value">{{ getTaskStats().total }}</div>
+        <div class="stat-label">Total</div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="stat-card">
+        <div class="stat-value text-secondary">{{ getTaskStats().todo }}</div>
+        <div class="stat-label">To Do</div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="stat-card">
+        <div class="stat-value text-primary">{{ getTaskStats().inProgress }}</div>
+        <div class="stat-label">In Progress</div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="stat-card">
+        <div class="stat-value text-success">{{ getTaskStats().done }}</div>
+        <div class="stat-label">Done</div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="stat-card">
+        <div class="stat-value text-danger">{{ getTaskStats().overdue }}</div>
+        <div class="stat-label">Overdue</div>
+      </div>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  } @else {
+    @if (filteredTasks().length === 0) {
+      <div class="alert alert-info">
+        No tasks found. Create your first task to get started!
+      </div>
+    } @else {
+      <div class="row">
+        @for (task of filteredTasks(); track task.id) {
+          <div class="col-md-6 col-lg-4 mb-3">
+            <div class="task-card" [ngClass]="{'task-overdue': isOverdue(task)}">
+              <div class="task-card-header">
+                <h5 class="task-title">{{ task.title }}</h5>
+                <div class="task-badges">
+                  <span class="badge" [ngClass]="getStatusBadgeClass(task.status)">
+                    {{ task.status }}
+                  </span>
+                  <span class="badge" [ngClass]="getPriorityBadgeClass(task.priority)">
+                    {{ task.priority }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="task-card-body">
+                @if (task.description) {
+                  <p class="task-description">{{ task.description }}</p>
+                }
+
+                <div class="task-meta">
+                  @if (task.assigneeName) {
+                    <div class="task-meta-item">
+                      <i class="fas fa-user text-muted me-1"></i>
+                      <small>{{ task.assigneeName }}</small>
+                    </div>
+                  }
+
+                  @if (task.dueDate) {
+                    <div class="task-meta-item">
+                      <i class="fas fa-calendar text-muted me-1"></i>
+                      <small>
+                        {{ task.dueDate | date:'mediumDate' }}
+                        @if (isOverdue(task)) {
+                          <span class="text-danger ms-1">(Overdue)</span>
+                        } @else if (getDaysUntilDue(task.dueDate) <= 3) {
+                          <span class="text-warning ms-1">({{ getDaysUntilDue(task.dueDate) }}d)</span>
+                        }
+                      </small>
+                    </div>
+                  }
+
+                  @if (task.estimatedHours) {
+                    <div class="task-meta-item">
+                      <i class="fas fa-clock text-muted me-1"></i>
+                      <small>{{ task.estimatedHours }}h est.</small>
+                      @if (task.actualHours) {
+                        <small class="ms-1">/ {{ task.actualHours }}h actual</small>
+                      }
+                    </div>
+                  }
+
+                  @if (task.tags && task.tags.length > 0) {
+                    <div class="task-tags">
+                      @for (tag of task.tags; track tag) {
+                        <span class="badge bg-light text-dark">{{ tag }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div class="task-card-footer">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button 
+                    class="btn btn-outline-primary" 
+                    (click)="openEditModal(task)"
+                    title="Edit"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  @if (task.status !== 'Done' && task.status !== 'Cancelled') {
+                    <button 
+                      class="btn btn-outline-success" 
+                      (click)="changeStatus(task, TaskStatus.Done)"
+                      title="Mark as Done"
+                    >
+                      <i class="fas fa-check"></i>
+                    </button>
+                  }
+                  <button 
+                    class="btn btn-outline-danger" 
+                    (click)="deleteTask(task)"
+                    title="Delete"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+
+                <small class="text-muted">
+                  Created by {{ task.creatorName }}
+                </small>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+<!-- Task Modal -->
+@if (showTaskModal()) {
+  <div class="modal-backdrop"></div>
+  <div class="modal d-block" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            @if (isEditMode()) {
+              Edit Task
+            } @else {
+              Create New Task
+            }
+          </h5>
+          <button type="button" class="btn-close" (click)="closeTaskModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="taskForm">
+            <div class="mb-3">
+              <label for="title" class="form-label">Title *</label>
+              <input 
+                type="text" 
+                id="title" 
+                class="form-control"
+                formControlName="title"
+                [ngClass]="{'is-invalid': taskForm.get('title')?.invalid && taskForm.get('title')?.touched}"
+              />
+              @if (taskForm.get('title')?.invalid && taskForm.get('title')?.touched) {
+                <div class="invalid-feedback">Title is required (max 200 characters)</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea 
+                id="description" 
+                class="form-control" 
+                rows="4"
+                formControlName="description"
+              ></textarea>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="status" class="form-label">Status *</label>
+                <select id="status" class="form-select" formControlName="status">
+                  <option [value]="TaskStatus.Todo">To Do</option>
+                  <option [value]="TaskStatus.InProgress">In Progress</option>
+                  <option [value]="TaskStatus.Review">Review</option>
+                  <option [value]="TaskStatus.Done">Done</option>
+                  <option [value]="TaskStatus.Cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="priority" class="form-label">Priority *</label>
+                <select id="priority" class="form-select" formControlName="priority">
+                  <option [value]="TaskPriority.Low">Low</option>
+                  <option [value]="TaskPriority.Medium">Medium</option>
+                  <option [value]="TaskPriority.High">High</option>
+                  <option [value]="TaskPriority.Critical">Critical</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="assigneeId" class="form-label">Assign To</label>
+                <select id="assigneeId" class="form-select" formControlName="assigneeId">
+                  <option value="">Unassigned</option>
+                  @for (user of users(); track user.id) {
+                    <option [value]="user.id">{{ user.name }} {{ user.surname }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="dueDate" class="form-label">Due Date</label>
+                <input 
+                  type="date" 
+                  id="dueDate" 
+                  class="form-control"
+                  formControlName="dueDate"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="estimatedHours" class="form-label">Estimated Hours</label>
+                <input 
+                  type="number" 
+                  id="estimatedHours" 
+                  class="form-control"
+                  formControlName="estimatedHours"
+                  min="0"
+                  step="0.5"
+                />
+              </div>
+
+              @if (isEditMode()) {
+                <div class="col-md-6 mb-3">
+                  <label for="actualHours" class="form-label">Actual Hours</label>
+                  <input 
+                    type="number" 
+                    id="actualHours" 
+                    class="form-control"
+                    formControlName="actualHours"
+                    min="0"
+                    step="0.5"
+                  />
+                </div>
+              }
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeTaskModal()">
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-primary"
+            (click)="saveTask()"
+          >
+            <i class="fas fa-save me-2"></i>
+            @if (isEditMode()) {
+              Update Task
+            } @else {
+              Create Task
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
