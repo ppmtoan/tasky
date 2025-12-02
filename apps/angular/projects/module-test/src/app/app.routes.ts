@@ -20,23 +20,6 @@ export const APP_ROUTES: Routes = [
     ]
   },
   {
-    path: 'host-admin',
-    children: [
-      {
-        path: 'editions',
-        loadComponent: () => import('./host-admin/editions/editions.component').then(c => c.EditionsComponent),
-      },
-      {
-        path: 'subscriptions',
-        loadComponent: () => import('./host-admin/subscriptions/subscriptions.component').then(c => c.SubscriptionsComponent),
-      },
-      {
-        path: 'invoices',
-        loadComponent: () => import('./host-admin/invoices/invoices.component').then(c => c.InvoicesComponent),
-      },
-    ]
-  },
-  {
     path: 'tasks',
     loadComponent: () => import('./tasks/task-list/task-list.component').then(c => c.TaskListComponent),
   },
@@ -54,10 +37,6 @@ export const APP_ROUTES: Routes = [
       import('@volo/abp.ng.language-management').then(c => c.createRoutes()),
   },
   {
-    path: 'saas',
-    loadChildren: () => import('@volo/abp.ng.saas').then(c => c.createRoutes()),
-  },
-  {
     path: 'audit-logs',
     loadChildren: () => import('@volo/abp.ng.audit-logging').then(c => c.createRoutes()),
   },
@@ -73,6 +52,29 @@ export const APP_ROUTES: Routes = [
   {
     path: 'setting-management',
     loadChildren: () => import('@abp/ng.setting-management').then(c => c.createRoutes()),
+  },
+  // Custom SaaS UI routes - more specific paths must come before ABP's generic 'saas' route
+  {
+    path: 'saas-management',  // Changed from 'saas' to avoid conflict with ABP's built-in module
+    children: [
+      {
+        path: 'editions',
+        loadComponent: () => import('./host-admin/editions/editions.component').then(c => c.EditionsComponent),
+      },
+      {
+        path: 'subscriptions',
+        loadComponent: () => import('./host-admin/subscriptions/subscriptions.component').then(c => c.SubscriptionsComponent),
+      },
+      {
+        path: 'invoices',
+        loadComponent: () => import('./host-admin/invoices/invoices.component').then(c => c.InvoicesComponent),
+      },
+    ]
+  },
+  // ABP's built-in SaaS module (tenant management)
+  {
+    path: 'saas',
+    loadChildren: () => import('@volo/abp.ng.saas').then(c => c.createRoutes()),
   },
   // {
   //   path: 'product-service',

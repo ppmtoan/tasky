@@ -40,27 +40,27 @@ function configureRoutes() {
       ],
     },
     {
-      path: '/host-admin',
-      name: 'Host Admin',
+      path: '/saas-management',  // Updated to match new route path
+      name: 'SaaS Management',
       iconClass: 'fas fa-shield-alt',
       order: 4,
       layout: eLayoutType.application,
       requiredPolicy: 'AbpSaas.Tenants',
       children: [
         {
-          path: '/host-admin/editions',
+          path: '/saas-management/editions',
           name: 'Editions',
           iconClass: 'fas fa-box',
           order: 1,
         },
         {
-          path: '/host-admin/subscriptions',
+          path: '/saas-management/subscriptions',
           name: 'Subscriptions',
           iconClass: 'fas fa-calendar-check',
           order: 2,
         },
         {
-          path: '/host-admin/invoices',
+          path: '/saas-management/invoices',
           name: 'Invoices',
           iconClass: 'fas fa-file-invoice-dollar',
           order: 3,
