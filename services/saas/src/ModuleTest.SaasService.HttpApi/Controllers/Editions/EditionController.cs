@@ -14,7 +14,7 @@ namespace ModuleTest.SaasService.Controllers.Editions;
 /// </summary>
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas/editions")]
+[Route("api/saas-service/editions")] // Changed from "api/saas/editions" to avoid conflict with ABP's built-in SaaS module
 [AllowAnonymous] // For testing purposes - remove in production
 public class EditionController : AbpControllerBase, IEditionAppService
 {

@@ -12,7 +12,7 @@ namespace ModuleTest.SaasService.Controllers.Invoices;
 
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas/invoices")]
+[Route("api/saas-service/invoices")] // Changed to avoid conflict with ABP's built-in SaaS module
 [AllowAnonymous] // For testing purposes - remove in production
 public class InvoiceController : AbpControllerBase, IInvoiceAppService
 {

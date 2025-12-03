@@ -11,7 +11,7 @@ namespace ModuleTest.SaasService.Controllers.HostAdmin;
 
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas/host-admin")]
+[Route("api/saas-service/host-admin")] // Changed to avoid conflict with ABP's built-in SaaS module
 [AllowAnonymous] // For testing purposes - remove in production
 public class HostAdminController : AbpControllerBase, IHostAdminAppService
 {

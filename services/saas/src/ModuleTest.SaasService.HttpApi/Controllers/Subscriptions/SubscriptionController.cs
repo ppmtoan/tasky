@@ -14,7 +14,7 @@ namespace ModuleTest.SaasService.Controllers.Subscriptions;
 /// </summary>
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas/subscriptions")]
+[Route("api/saas-service/subscriptions")] // Changed to avoid conflict with ABP's built-in SaaS module
 [AllowAnonymous] // For testing purposes - remove in production
 public class SubscriptionController : AbpControllerBase, ISubscriptionAppService
 {

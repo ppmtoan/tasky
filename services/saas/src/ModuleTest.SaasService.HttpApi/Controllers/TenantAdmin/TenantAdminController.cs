@@ -9,7 +9,7 @@ namespace ModuleTest.SaasService.Controllers.TenantAdmin;
 
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas/tenant-admin")]
+[Route("api/saas-service/tenant-admin")] // Changed to avoid conflict with ABP's built-in SaaS module
 [AllowAnonymous] // For testing purposes - remove in production
 public class TenantAdminController : AbpControllerBase, ITenantAdminAppService
 {

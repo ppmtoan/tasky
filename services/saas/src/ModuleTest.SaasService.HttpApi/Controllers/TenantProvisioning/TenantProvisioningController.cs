@@ -12,7 +12,7 @@ namespace ModuleTest.SaasService.Controllers.TenantProvisioning;
 /// </summary>
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas/tenant-provisioning")]
+[Route("api/saas-service/tenant-provisioning")] // Changed to avoid conflict with ABP's built-in SaaS module
 public class TenantProvisioningController : AbpControllerBase, ITenantProvisioningAppService
 {
     private readonly ITenantProvisioningAppService _tenantProvisioningAppService;
