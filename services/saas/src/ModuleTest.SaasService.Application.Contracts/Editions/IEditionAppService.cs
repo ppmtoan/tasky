@@ -7,10 +7,9 @@ using Volo.Abp.Application.Services;
 namespace ModuleTest.SaasService.Editions;
 
 /// <summary>
-/// Edition management service - temporarily allows anonymous access for testing
-/// TODO: Remove [AllowAnonymous] in production
+/// Edition management service
+/// Note: Apply [AllowAnonymous] or [Authorize] at controller/method level
 /// </summary>
-[AllowAnonymous]
 public interface IEditionAppService : ICrudAppService<EditionDto, Guid, PagedAndSortedResultRequestDto, CreateEditionDto, UpdateEditionDto>
 {
     /// <summary>

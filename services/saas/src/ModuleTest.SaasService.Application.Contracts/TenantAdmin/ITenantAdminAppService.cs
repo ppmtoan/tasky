@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ModuleTest.SaasService.TenantAdmin;
 
-/// TODO: Remove [AllowAnonymous] in production and enforce proper authorization
-/// This is temporarily disabled for testing purposes
-[AllowAnonymous]
+/// <summary>
+/// Tenant administration service
+/// Note: Apply [AllowAnonymous] or [Authorize] at controller/method level
+/// </summary>
 public interface ITenantAdminAppService : IApplicationService
 {
     Task<TenantDashboardDto> GetDashboardAsync();

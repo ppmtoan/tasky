@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ModuleTest.SaasService.Invoices;
 
-/// TODO: Remove [AllowAnonymous] in production and enforce proper authorization
-/// This is temporarily disabled for testing purposes
-[AllowAnonymous]
+/// <summary>
+/// Invoice management service
+/// Note: Apply [AllowAnonymous] or [Authorize] at controller/method level
+/// </summary>
 public interface IInvoiceAppService : IApplicationService
 {
     Task<PagedResultDto<InvoiceDto>> GetListAsync(PagedAndSortedResultRequestDto input);

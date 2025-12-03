@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ModuleTest.SaasService.HostAdmin;
 
-/// TODO: Remove [AllowAnonymous] in production and enforce proper authorization
-/// This is temporarily disabled for testing purposes
-[AllowAnonymous]
+/// <summary>
+/// Host administration service
+/// Note: Apply [AllowAnonymous] or [Authorize] at controller/method level
+/// </summary>
 public interface IHostAdminAppService : IApplicationService
 {
     Task<HostMetricsDto> GetMetricsAsync();

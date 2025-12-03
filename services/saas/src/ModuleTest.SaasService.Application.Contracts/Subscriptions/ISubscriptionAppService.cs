@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ModuleTest.SaasService.Subscriptions;
 
-/// TODO: Remove [AllowAnonymous] in production and enforce proper authorization
-/// This is temporarily disabled for testing purposes
-[AllowAnonymous]
+/// <summary>
+/// Subscription management service
+/// Note: Apply [AllowAnonymous] or [Authorize] at controller/method level
+/// </summary>
 public interface ISubscriptionAppService : ICrudAppService<SubscriptionDto, Guid, PagedAndSortedResultRequestDto, CreateSubscriptionDto, UpdateSubscriptionDto>
 {
     Task<SubscriptionDto> GetCurrentTenantSubscriptionAsync();

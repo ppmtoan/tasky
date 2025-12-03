@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ModuleTest.SaasService.TenantProvisioning;
 
-/// TODO: Remove [AllowAnonymous] in production and enforce proper authorization
-/// This is temporarily disabled for testing purposes
-[AllowAnonymous]
+/// <summary>
+/// Tenant provisioning service
+/// Note: Apply [AllowAnonymous] or [Authorize] at controller/method level
+/// </summary>
 public interface ITenantProvisioningAppService : IApplicationService
 {
     Task<TenantProvisioningResultDto> ProvisionTenantAsync(TenantProvisioningRequestDto input);
