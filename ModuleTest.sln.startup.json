@@ -53,13 +53,33 @@
   "MultiProjectConfigurations": {
     "ModuleTest": {
       "Projects": {
-        "ModuleTest.AuthServer": {},
-        "ModuleTest.WebGateway": {},
-        "ModuleTest.PublicWebGateway": {},
-        "ModuleTest.AdministrationService.HttpApi.Host": {},
-        "ModuleTest.IdentityService.HttpApi.Host": {},
-        "ModuleTest.ProductService.HttpApi.Host": {},
-        "ModuleTest.SaasService.HttpApi.Host": {}
+        "ModuleTest.AuthServer": {
+          "StartDelay": 0
+        },
+        "ModuleTest.IdentityService.HttpApi.Host": {
+          "StartDelay": 5000
+        },
+        "ModuleTest.AdministrationService.HttpApi.Host": {
+          "StartDelay": 10000
+        },
+        "ModuleTest.SaasService.HttpApi.Host": {
+          "StartDelay": 7000
+        },
+        "ModuleTest.ProductService.HttpApi.Host": {
+          "StartDelay": 7000
+        },
+        "ModuleTest.WebGateway": {
+          "StartDelay": 15000
+        },
+        "ModuleTest.PublicWebGateway": {
+          "StartDelay": 18000
+        },
+        "Angular": {
+          "StartDelay": 21000,
+          "StartExternalProgram": "yarn",
+          "CommandLineArguments": "start",
+          "WorkingDirectory": "apps\\angular"
+        }
       }
     }
   }

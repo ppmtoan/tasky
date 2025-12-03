@@ -5,6 +5,9 @@ public static class SaasServiceErrorCodes
     // Edition errors
     public const string EditionNotFound = "SaaS:001";
     public const string EditionNotActive = "SaaS:001A";
+    public const string EditionAlreadyActive = "SaaS:001B";
+    public const string EditionAlreadyInactive = "SaaS:001C";
+    public const string InvalidDisplayOrder = "SaaS:001D";
     
     // Subscription errors
     public const string SubscriptionNotFound = "SaaS:002";

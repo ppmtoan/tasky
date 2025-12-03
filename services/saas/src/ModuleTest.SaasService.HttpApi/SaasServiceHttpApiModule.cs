@@ -33,5 +33,13 @@ public class SaasServiceHttpApiModule : AbpModule
             .Get<SaasServiceResource>()
             .AddBaseTypes(typeof(AbpUiResource));
         });
+
+        Configure<AbpAspNetCoreMvcOptions>(options =>
+        {
+            options.ConventionalControllers.Create(typeof(SaasServiceHttpApiModule).Assembly, opts =>
+            {
+                opts.RootPath = "saas-service";
+            });
+        });
     }
 }

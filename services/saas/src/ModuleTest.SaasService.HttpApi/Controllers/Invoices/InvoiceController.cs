@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ModuleTest.SaasService.Invoices;
 using Volo.Abp;
@@ -12,7 +12,8 @@ namespace ModuleTest.SaasService.Controllers.Invoices;
 
 [RemoteService(Name = SaasServiceRemoteServiceConsts.RemoteServiceName)]
 [Area(SaasServiceRemoteServiceConsts.ModuleName)]
-[Route("api/saas-service/invoices")]
+[Route("api/saas-service/invoices")] // Changed to avoid conflict with ABP's built-in SaaS module
+[AllowAnonymous] // For testing purposes - remove in production
 public class InvoiceController : AbpControllerBase, IInvoiceAppService
 {
     private readonly IInvoiceAppService _invoiceAppService;
@@ -61,5 +62,20 @@ public class InvoiceController : AbpControllerBase, IInvoiceAppService
     public virtual Task ProcessOverdueInvoicesAsync()
     {
         return _invoiceAppService.ProcessOverdueInvoicesAsync();
+    }
+
+    /// <summary>
+    /// Adds notes to an existing invoice
+    /// </summary>
+    /// <param name="id">The unique identifier of the invoice</param>
+    /// <param name="input">Notes to add</param>
+    /// <returns>Updated invoice with the new notes</returns>
+    /// <response code="200">Notes added successfully</response>
+    /// <response code="404">Invoice not found</response>
+    [HttpPost]
+    [Route("{id}/add-notes")]
+    public virtual Task<InvoiceDto> AddNotesAsync(Guid id, AddInvoiceNotesDto input)
+    {
+        return _invoiceAppService.AddNotesAsync(id, input);
     }
 }

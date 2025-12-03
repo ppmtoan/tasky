@@ -33,7 +33,11 @@ public class SaasServiceEntityFrameworkCoreModule : AbpModule
 
                 /* includeAllEntities: true allows to use IRepository<TEntity, TKey> also for non aggregate root entities */
             options.AddDefaultRepositories(includeAllEntities: true);
+            
+            // Register custom repositories
+            options.AddRepository<ModuleTest.SaasService.Aggregates.EditionAggregate.Edition, EditionRepository>();
             options.AddRepository<ModuleTest.SaasService.Aggregates.SubscriptionAggregate.Subscription, SubscriptionRepository>();
+            options.AddRepository<ModuleTest.SaasService.Aggregates.BillingAggregate.Invoice, InvoiceRepository>();
         });
         Configure<AbpDbConnectionOptions>(options =>
         {

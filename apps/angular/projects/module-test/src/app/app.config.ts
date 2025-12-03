@@ -23,6 +23,10 @@ import { APP_ROUTES } from './app.routes';
 import { APP_ROUTE_PROVIDER } from './route.provider';
 import { ThemeBasicModule, provideThemeBasicConfig } from '@abp/ng.theme.basic';
 import { ThemeSharedModule, withValidationBluePrint, provideAbpThemeShared } from '@abp/ng.theme.shared';
+
+// Uncomment the line below to enable mock services for testing UI without backend
+// import { MOCK_SERVICE_PROVIDERS } from './proxy/mock-providers';
+
 export const appConfig: ApplicationConfig = {
     providers: [
     importProvidersFrom([
@@ -48,8 +52,14 @@ export const appConfig: ApplicationConfig = {
     provideCommercialUiConfig(),
     provideFeatureManagementConfig(),
     provideLogo(withEnvironmentOptions(environment)),
-    provideProductServiceConfig(), importProvidersFrom(ThemeBasicModule, ThemeSharedModule), provideThemeBasicConfig(), provideAbpThemeShared(withValidationBluePrint({
+    provideProductServiceConfig(), 
+    importProvidersFrom(ThemeBasicModule, ThemeSharedModule), 
+    provideThemeBasicConfig(), 
+    provideAbpThemeShared(withValidationBluePrint({
         wrongPassword: 'Please choose 1q2w3E*'
-    }))
+    })),
+    
+    // Uncomment the line below to enable mock services
+    // ...MOCK_SERVICE_PROVIDERS
 ],
 };
