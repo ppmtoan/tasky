@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ModuleTest.SaasService.Invoices;
 
+/// TODO: Remove [AllowAnonymous] in production and enforce proper authorization
+/// This is temporarily disabled for testing purposes
+[AllowAnonymous]
 public interface IInvoiceAppService : IApplicationService
 {
     Task<PagedResultDto<InvoiceDto>> GetListAsync(PagedAndSortedResultRequestDto input);

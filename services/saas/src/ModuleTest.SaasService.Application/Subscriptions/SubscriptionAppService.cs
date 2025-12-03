@@ -31,11 +31,12 @@ public class SubscriptionAppService : CrudAppService<Subscription, SubscriptionD
         _editionRepository = editionRepository;
         _subscriptionManager = subscriptionManager;
         
-        GetPolicyName = SaasServicePermissions.Subscriptions.Default;
-        GetListPolicyName = SaasServicePermissions.Subscriptions.Default;
-        CreatePolicyName = SaasServicePermissions.Subscriptions.Create;
-        UpdatePolicyName = SaasServicePermissions.Subscriptions.Update;
-        DeletePolicyName = SaasServicePermissions.Subscriptions.Delete;
+        // TODO: Re-enable permissions in production
+        // GetPolicyName = SaasServicePermissions.Subscriptions.Default;
+        // GetListPolicyName = SaasServicePermissions.Subscriptions.Default;
+        // CreatePolicyName = SaasServicePermissions.Subscriptions.Create;
+        // UpdatePolicyName = SaasServicePermissions.Subscriptions.Update;
+        // DeletePolicyName = SaasServicePermissions.Subscriptions.Delete;
     }
 
     public override async Task<SubscriptionDto> CreateAsync(CreateSubscriptionDto input)

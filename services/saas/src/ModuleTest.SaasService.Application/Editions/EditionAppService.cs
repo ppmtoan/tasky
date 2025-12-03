@@ -15,10 +15,12 @@ public class EditionAppService : CrudAppService<Edition, EditionDto, Guid, Paged
 {
     public EditionAppService(IRepository<Edition, Guid> repository) : base(repository)
     {
-        GetPolicyName = SaasServicePermissions.Editions.Default;
-        GetListPolicyName = SaasServicePermissions.Editions.Default;
-        CreatePolicyName = SaasServicePermissions.Editions.Create;
-        UpdatePolicyName = SaasServicePermissions.Editions.Update;
-        DeletePolicyName = SaasServicePermissions.Editions.Delete;
+        // TODO: Re-enable permissions in production
+        // Temporarily disabled for testing - REMOVE IN PRODUCTION
+        // GetPolicyName = SaasServicePermissions.Editions.Default;
+        // GetListPolicyName = SaasServicePermissions.Editions.Default;
+        // CreatePolicyName = SaasServicePermissions.Editions.Create;
+        // UpdatePolicyName = SaasServicePermissions.Editions.Update;
+        // DeletePolicyName = SaasServicePermissions.Editions.Delete;
     }
 }

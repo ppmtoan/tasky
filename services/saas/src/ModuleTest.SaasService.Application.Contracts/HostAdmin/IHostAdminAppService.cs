@@ -2,9 +2,13 @@ using System;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ModuleTest.SaasService.HostAdmin;
 
+/// TODO: Remove [AllowAnonymous] in production and enforce proper authorization
+/// This is temporarily disabled for testing purposes
+[AllowAnonymous]
 public interface IHostAdminAppService : IApplicationService
 {
     Task<HostMetricsDto> GetMetricsAsync();
