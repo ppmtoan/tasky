@@ -13,7 +13,7 @@ import {
 })
 export class TenantProvisioningService {
   apiName = 'SaasService';
-  baseUrl = '/api/saas/tenant-provisioning';
+  baseUrl = '/api/saas-service/tenant-provisioning'; // Updated to match backend route
 
   constructor(private rest: RestService) {}
 
@@ -32,7 +32,7 @@ export class TenantProvisioningService {
     return this.rest.request<void, TenantDetailDto>(
       {
         method: 'GET',
-        url: `/api/saas/tenant-admin/details/${tenantId}`,
+        url: `/api/saas-service/tenant-admin/details/${tenantId}`, // Updated to match backend route
       },
       { apiName: this.apiName }
     );
@@ -42,7 +42,7 @@ export class TenantProvisioningService {
     return this.rest.request<void, TenantDashboardDto>(
       {
         method: 'GET',
-        url: '/api/saas/tenant-admin/dashboard',
+        url: '/api/saas-service/tenant-admin/dashboard', // Updated to match backend route
       },
       { apiName: this.apiName }
     );

@@ -9,7 +9,7 @@ import { PagedResultDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 })
 export class EditionService {
   apiName = 'SaasService';
-  baseUrl = '/api/saas/editions';
+  baseUrl = '/api/saas-service/editions'; // Updated to match backend route
 
   constructor(private rest: RestService) {}
 

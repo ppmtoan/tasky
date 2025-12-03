@@ -8,7 +8,7 @@ import { SubscriptionDto } from './models';
 })
 export class SubscriptionService {
   apiName = 'SaasService';
-  baseUrl = '/api/saas/subscriptions';
+  baseUrl = '/api/saas-service/subscriptions'; // Updated to match backend route
 
   constructor(private rest: RestService) {}
 
