@@ -10,7 +10,7 @@ using ModuleTest.SaasService.Repositories;
 using ModuleTest.SaasService.ValueObjects;
 using Volo.Abp;
 using Volo.Abp.Domain.Services;
-using Volo.Abp.Identity;
+using Volo.Abp.EventBus.Local;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.Uow;
 using Volo.Saas.Tenants;
@@ -20,7 +20,8 @@ namespace ModuleTest.SaasService.DomainServices;
 
 /// <summary>
 /// Domain service responsible for tenant provisioning and onboarding.
-/// Orchestrates the complex process of creating tenants with subscriptions and admin users.
+/// Orchestrates the complex process of creating tenants with subscriptions.
+/// Admin user creation is delegated to Identity service via distributed events.
 /// </summary>
 public class TenantProvisioningManager : DomainService
 {
@@ -28,24 +29,25 @@ public class TenantProvisioningManager : DomainService
     private readonly IEditionRepository _editionRepository;
     private readonly SubscriptionManager _subscriptionManager;
     private readonly InvoiceManager _invoiceManager;
-    private readonly IdentityUserManager _userManager;
+    private readonly ILocalEventBus _localEventBus;
 
     public TenantProvisioningManager(
         ITenantManager tenantManager,
         IEditionRepository editionRepository,
         SubscriptionManager subscriptionManager,
         InvoiceManager invoiceManager,
-        IdentityUserManager userManager)
+        ILocalEventBus localEventBus)
     {
         _tenantManager = tenantManager;
         _editionRepository = editionRepository;
         _subscriptionManager = subscriptionManager;
         _invoiceManager = invoiceManager;
-        _userManager = userManager;
+        _localEventBus = localEventBus;
     }
 
     /// <summary>
-    /// Provisions a complete tenant including subscription, admin user, and initial invoice.
+    /// Provisions a complete tenant including subscription and initial invoice.
+    /// Raises event for Identity service to create admin user.
     /// This is a complex orchestration of multiple domain operations.
     /// </summary>
     [UnitOfWork]
@@ -75,19 +77,6 @@ public class TenantProvisioningManager : DomainService
         
         Logger.LogInformation($"Created tenant: {tenantName} (ID: {tenant.Id})");
 
-        Guid adminUserId;
-        
-        // Create admin user within tenant context
-        using (CurrentTenant.Change(tenant.Id))
-        {
-            adminUserId = await CreateTenantAdminUserAsync(
-                adminUserName ?? adminEmail,
-                adminEmail,
-                adminPassword,
-                tenant.Id
-            );
-        }
-
         // Create subscription
         var subscription = await _subscriptionManager.CreateSubscriptionAsync(
             tenant.Id,
@@ -113,59 +102,29 @@ public class TenantProvisioningManager : DomainService
             Logger.LogInformation($"Generated initial invoice for tenant: {tenant.Id}");
         }
 
-        Logger.LogInformation($"Tenant provisioning completed: {tenantName} (ID: {tenant.Id})");
+        // Raise event for Identity service to create admin user
+        // This decouples SaaS service from Identity service in microservices architecture
+        await _localEventBus.PublishAsync(new TenantProvisionedEto
+        {
+            TenantId = tenant.Id,
+            TenantName = tenantName,
+            AdminEmail = adminEmail,
+            AdminUserName = adminUserName ?? adminEmail,
+            AdminPassword = adminPassword,
+            EditionId = editionId,
+            SubscriptionId = subscription.Id,
+            IsTrialSubscription = trialDays.HasValue && trialDays.Value > 0,
+            TrialDays = trialDays
+        });
+
+        Logger.LogInformation($"Tenant provisioning completed: {tenantName} (ID: {tenant.Id}). Admin user creation event raised.");
 
         return new TenantProvisioningResult
         {
             Tenant = tenant,
-            AdminUserId = adminUserId,
             Subscription = subscription,
             InitialInvoice = initialInvoice
         };
-    }
-
-    /// <summary>
-    /// Creates the admin user for a newly provisioned tenant.
-    /// </summary>
-    private async Task<Guid> CreateTenantAdminUserAsync(
-        string userName,
-        string email,
-        string password,
-        Guid tenantId)
-    {
-        // Business Rule: Email must be unique within tenant
-        var existingUser = await _userManager.FindByEmailAsync(email);
-        if (existingUser != null)
-        {
-            throw new BusinessException(SaasServiceErrorCodes.UserEmailAlreadyExists)
-                .WithData("Email", email);
-        }
-
-        var adminUser = new IdentityUser(
-            GuidGenerator.Create(),
-            userName,
-            email,
-            tenantId
-        );
-
-        var result = await _userManager.CreateAsync(adminUser, password);
-        if (!result.Succeeded)
-        {
-            throw new BusinessException(SaasServiceErrorCodes.UserCreationFailed)
-                .WithData("Errors", string.Join(", ", result.Errors));
-        }
-
-        // Business Rule: Admin user must have admin role
-        var roleResult = await _userManager.AddToRoleAsync(adminUser, "admin");
-        if (!roleResult.Succeeded)
-        {
-            Logger.LogWarning($"Failed to assign admin role to user {userName}: {string.Join(", ", roleResult.Errors)}");
-            // Don't fail the entire provisioning if role assignment fails
-        }
-
-        Logger.LogInformation($"Created admin user: {userName} for tenant: {tenantId}");
-
-        return adminUser.Id;
     }
 
     /// <summary>
@@ -191,7 +150,6 @@ public class TenantProvisioningManager : DomainService
 public class TenantProvisioningResult
 {
     public Tenant Tenant { get; set; }
-    public Guid AdminUserId { get; set; }
     public Subscription Subscription { get; set; }
     public Invoice InitialInvoice { get; set; }
 }

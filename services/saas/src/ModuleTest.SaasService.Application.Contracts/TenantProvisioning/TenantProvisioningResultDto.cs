@@ -10,8 +10,9 @@ public class TenantProvisioningResultDto
     
     public Guid SubscriptionId { get; set; }
     
-    public Guid AdminUserId { get; set; }
-    
+    /// <summary>
+    /// Admin email (AdminUserId will be created by Identity service via event)
+    /// </summary>
     public string AdminEmail { get; set; }
     
     public bool Success { get; set; }

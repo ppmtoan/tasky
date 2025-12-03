@@ -12,7 +12,6 @@ using ModuleTest.SaasService.ValueObjects;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.Identity;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.Uow;
 using Volo.Saas.Tenants;
@@ -75,10 +74,9 @@ public class TenantProvisioningAppService : ApplicationService, ITenantProvision
                 TenantId = result.Tenant.Id,
                 TenantName = result.Tenant.Name,
                 SubscriptionId = result.Subscription.Id,
-                AdminUserId = result.AdminUserId,
                 AdminEmail = input.AdminEmail,
                 Success = true,
-                Message = "Tenant provisioned successfully"
+                Message = "Tenant provisioned successfully. Admin user will be created by Identity service."
             };
         }
         catch (Exception ex)
