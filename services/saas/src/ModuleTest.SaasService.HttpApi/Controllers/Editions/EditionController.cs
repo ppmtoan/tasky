@@ -93,4 +93,44 @@ public class EditionController : AbpControllerBase, IEditionAppService
     {
         return _editionAppService.DeleteAsync(id);
     }
+
+    /// <summary>
+    /// Activates an edition making it available for new subscriptions
+    /// </summary>
+    /// <param name="id">The unique identifier of the edition</param>
+    /// <response code="200">Edition activated successfully</response>
+    /// <response code="404">Edition not found</response>
+    [HttpPost]
+    [Route("{id}/activate")]
+    public virtual Task ActivateAsync(Guid id)
+    {
+        return _editionAppService.ActivateAsync(id);
+    }
+
+    /// <summary>
+    /// Deactivates an edition preventing new subscriptions
+    /// </summary>
+    /// <param name="id">The unique identifier of the edition</param>
+    /// <response code="200">Edition deactivated successfully</response>
+    /// <response code="404">Edition not found</response>
+    [HttpPost]
+    [Route("{id}/deactivate")]
+    public virtual Task DeactivateAsync(Guid id)
+    {
+        return _editionAppService.DeactivateAsync(id);
+    }
+
+    /// <summary>
+    /// Updates the display order for edition sorting
+    /// </summary>
+    /// <param name="id">The unique identifier of the edition</param>
+    /// <param name="displayOrder">The new display order value</param>
+    /// <response code="200">Display order updated successfully</response>
+    /// <response code="404">Edition not found</response>
+    [HttpPut]
+    [Route("{id}/display-order/{displayOrder}")]
+    public virtual Task UpdateDisplayOrderAsync(Guid id, int displayOrder)
+    {
+        return _editionAppService.UpdateDisplayOrderAsync(id, displayOrder);
+    }
 }
