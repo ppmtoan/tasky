@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ModuleTest.AdministrationService.EntityFrameworkCore;
 using ModuleTest.SaasService.Application;
 using ModuleTest.SaasService.DbMigrations;
 using ModuleTest.SaasService.EntityFrameworkCore;
@@ -22,8 +21,6 @@ namespace ModuleTest.SaasService;
 
 [DependsOn(
     typeof(ModuleTestSharedHostingMicroservicesModule),
-    typeof(AdministrationServiceEntityFrameworkCoreModule),
-    typeof(SaasServiceEntityFrameworkCoreModule),
     typeof(SaasServiceEntityFrameworkCoreModule),
     typeof(SaasServiceApplicationModule),
     typeof(SaasServiceHttpApiModule)
