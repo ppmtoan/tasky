@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using ModuleTest.SaasService.Enums;
 using ModuleTest.SaasService.Repositories;
@@ -8,7 +7,6 @@ using ModuleTest.SaasService.ValueObjects;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.Identity;
 using Volo.Abp.TenantManagement;
 using Volo.Saas.Tenants;
 
@@ -19,20 +17,17 @@ public class TenantAdminAppService : ApplicationService, ITenantAdminAppService
     private readonly ITenantRepository _tenantRepository;
     private readonly ISubscriptionRepository _subscriptionRepository;
     private readonly IInvoiceRepository _invoiceRepository;
-    private readonly IIdentityUserRepository _userRepository;
     private readonly IEditionRepository _editionRepository;
 
     public TenantAdminAppService(
         ITenantRepository tenantRepository,
         ISubscriptionRepository subscriptionRepository,
         IInvoiceRepository invoiceRepository,
-        IIdentityUserRepository userRepository,
         IEditionRepository editionRepository)
     {
         _tenantRepository = tenantRepository;
         _subscriptionRepository = subscriptionRepository;
         _invoiceRepository = invoiceRepository;
-        _userRepository = userRepository;
         _editionRepository = editionRepository;
     }
 
@@ -66,7 +61,9 @@ public class TenantAdminAppService : ApplicationService, ITenantAdminAppService
             invoicesQuery.Where(i => i.TenantId == tenantId)
         );
 
-        var userCount = (int)await _userRepository.GetCountAsync();
+        // TODO: Get user count from Identity service via HTTP API or distributed event
+        // For now, return 0 until Identity service integration is implemented
+        var userCount = 0;
 
         var featureLimits = edition?.FeatureLimits != null
             ? new System.Collections.Generic.Dictionary<string, object>
