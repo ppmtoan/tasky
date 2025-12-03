@@ -23,4 +23,9 @@ public interface IInvoiceAppService : IApplicationService
     Task CancelAsync(Guid id);
     
     Task ProcessOverdueInvoicesAsync();
+    
+    /// <summary>
+    /// Adds notes to an invoice
+    /// </summary>
+    Task<InvoiceDto> AddNotesAsync(Guid id, AddInvoiceNotesDto input);
 }

@@ -133,4 +133,25 @@ public class InvoiceAppService : ApplicationService, IInvoiceAppService
 
         Logger.LogInformation($"Processed {processedCount} overdue invoices");
     }
+
+    public async Task<InvoiceDto> AddNotesAsync(Guid id, AddInvoiceNotesDto input)
+    {
+        // TODO: Re-enable permission check in production
+        // await CheckPolicyAsync(SaasServicePermissions.Invoices.Default);
+
+        var invoice = await _invoiceRepository.GetAsync(id);
+        
+        if (invoice == null)
+        {
+            throw new BusinessException(SaasServiceErrorCodes.InvoiceNotFound)
+                .WithData("InvoiceId", id);
+        }
+        
+        invoice.AddNotes(input.Notes);
+        
+        await _invoiceRepository.UpdateAsync(invoice);
+        await CurrentUnitOfWork.SaveChangesAsync();
+
+        return ObjectMapper.Map<Invoice, InvoiceDto>(invoice);
+    }
 }

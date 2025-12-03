@@ -63,4 +63,19 @@ public class InvoiceController : AbpControllerBase, IInvoiceAppService
     {
         return _invoiceAppService.ProcessOverdueInvoicesAsync();
     }
+
+    /// <summary>
+    /// Adds notes to an existing invoice
+    /// </summary>
+    /// <param name="id">The unique identifier of the invoice</param>
+    /// <param name="input">Notes to add</param>
+    /// <returns>Updated invoice with the new notes</returns>
+    /// <response code="200">Notes added successfully</response>
+    /// <response code="404">Invoice not found</response>
+    [HttpPost]
+    [Route("{id}/add-notes")]
+    public virtual Task<InvoiceDto> AddNotesAsync(Guid id, AddInvoiceNotesDto input)
+    {
+        return _invoiceAppService.AddNotesAsync(id, input);
+    }
 }
