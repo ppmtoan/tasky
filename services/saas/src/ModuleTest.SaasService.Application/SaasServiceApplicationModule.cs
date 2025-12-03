@@ -19,7 +19,7 @@ public class SaasServiceApplicationModule : AbpModule
         context.Services.AddAutoMapperObjectMapper<SaasServiceApplicationModule>();
         Configure<AbpAutoMapperOptions>(options =>
         {
-            options.AddMaps<SaasServiceApplicationModule>(validate: true);
+            options.AddMaps<SaasServiceApplicationModule>(validate: false);
         });
     }
 }
