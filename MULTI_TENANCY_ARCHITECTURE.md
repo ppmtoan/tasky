@@ -296,6 +296,444 @@ var subscriptions = await _subscriptionRepository.GetListAsync();
 
 ---
 
+## 🔄 Workflow Design
+
+### 1. Tenant Self-Service Registration Flow
+
+**User Journey: Public Tenant Signup**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Angular
+    participant AuthServer
+    participant SaasService
+    participant IdentityService
+    participant SubscriptionService
+    participant EmailService
+    
+    User->>Angular: Navigate to /tenant-signup
+    Angular->>Angular: Display registration form (public)
+    User->>Angular: Fill form (tenant name, admin email, password, plan)
+    Angular->>Angular: Validate client-side
+    
+    User->>Angular: Submit registration
+    Angular->>SaasService: POST /api/saas/tenants/register
+    
+    SaasService->>SaasService: Validate tenant name uniqueness
+    SaasService->>SaasService: Create tenant (INSERT AbpTenants)
+    SaasService->>SaasService: Store tenant in shared database
+    
+    SaasService->>IdentityService: Create admin user for tenant
+    Note over IdentityService: Switch to tenant context<br/>User.TenantId = tenant.Id
+    IdentityService->>IdentityService: INSERT AbpUsers with TenantId
+    IdentityService->>IdentityService: Assign Admin role
+    IdentityService->>EmailService: Send verification email
+    
+    SaasService->>SubscriptionService: Create initial subscription
+    SubscriptionService->>SubscriptionService: Link tenant to edition
+    SubscriptionService->>SubscriptionService: Set trial period (if applicable)
+    SubscriptionService->>SubscriptionService: Generate first invoice
+    
+    SaasService-->>Angular: Return success (tenant created)
+    Angular->>User: Show success message
+    Angular->>User: Redirect to login with tenant info
+    
+    User->>EmailService: Click verification link
+    EmailService->>IdentityService: Verify email
+    IdentityService-->>User: Email confirmed
+    
+    User->>AuthServer: Login with credentials
+    AuthServer->>AuthServer: Validate user + tenant
+    AuthServer->>IdentityService: Check tenant status
+    AuthServer-->>User: Issue JWT with tenant claims
+    
+    User->>Angular: Access application
+    Angular->>Angular: Extract tenant from JWT
+    Angular->>SaasService: API calls with tenant context
+    Note over SaasService: All queries filtered by TenantId
+```
+
+**Key Steps:**
+1. ✅ **Public Access** - No authentication required for signup
+2. ✅ **Tenant Creation** - Insert into shared database with unique ID
+3. ✅ **Admin User Setup** - Create first user in tenant context
+4. ✅ **Subscription Setup** - Link to selected edition/plan
+5. ✅ **Email Verification** - Confirm admin email
+6. ✅ **Login** - JWT includes tenant ID in claims
+7. ✅ **Data Isolation** - All subsequent API calls filtered by tenant
+
+---
+
+### 2. Host Edition Management Flow
+
+**User Journey: Host Creates/Manages Subscription Plans**
+
+```mermaid
+sequenceDiagram
+    participant Host
+    participant Angular
+    participant AuthServer
+    participant SaasService
+    participant Database
+    
+    Host->>Angular: Login as host admin
+    AuthServer-->>Angular: JWT (no tenant claim)
+    
+    Host->>Angular: Navigate to /host-admin/editions
+    Angular->>Angular: Check permission (AbpSaas.Tenants)
+    Angular->>SaasService: GET /api/saas/editions
+    
+    SaasService->>SaasService: Verify host context (TenantId = null)
+    SaasService->>Database: SELECT * FROM Editions (no TenantId filter)
+    Database-->>SaasService: Return all editions
+    SaasService-->>Angular: EditionDto[]
+    Angular->>Host: Display editions list
+    
+    Host->>Angular: Click "Create Edition"
+    Angular->>Angular: Show edition form modal
+    Host->>Angular: Fill form (name, monthly/yearly price, features)
+    
+    Host->>Angular: Submit form
+    Angular->>SaasService: POST /api/saas/editions
+    SaasService->>SaasService: Validate edition data
+    SaasService->>Database: INSERT INTO Editions (no TenantId)
+    Database-->>SaasService: Edition created
+    SaasService-->>Angular: EditionDto
+    
+    Angular->>Angular: Refresh editions list
+    Angular->>Host: Show success notification
+    
+    Note over Host,Database: Edition available to all tenants<br/>Stored without TenantId (shared resource)
+```
+
+**Key Steps:**
+1. ✅ **Host Authentication** - JWT without tenant claim
+2. ✅ **Permission Check** - Requires `AbpSaas.Tenants` policy
+3. ✅ **Host Context** - Queries without tenant filtering
+4. ✅ **Shared Resource** - Editions have no TenantId
+5. ✅ **Global Availability** - All tenants can subscribe
+
+---
+
+### 3. Tenant Subscription Management Flow
+
+**User Journey: Host Upgrades Tenant Subscription**
+
+```mermaid
+sequenceDiagram
+    participant Host
+    participant Angular
+    participant SaasService
+    participant SubscriptionService
+    participant InvoiceService
+    participant Database
+    
+    Host->>Angular: Navigate to /host-admin/subscriptions
+    Angular->>SaasService: GET /api/saas/subscriptions
+    
+    SaasService->>Database: SELECT * FROM Subscriptions (all tenants)
+    Note over SaasService: Disable IMultiTenant filter<br/>to query all tenants
+    Database-->>SaasService: All subscriptions
+    SaasService-->>Angular: SubscriptionDto[]
+    Angular->>Host: Display subscriptions table
+    
+    Host->>Angular: Search/filter for tenant "AcmeCorp"
+    Angular->>Angular: Filter client-side
+    Angular->>Host: Show AcmeCorp subscription
+    
+    Host->>Angular: Click "Upgrade Plan"
+    Angular->>Angular: Show edition selection modal
+    Angular->>SaasService: GET /api/saas/editions
+    SaasService-->>Angular: Available editions
+    Angular->>Host: Display edition options
+    
+    Host->>Angular: Select "Premium" edition
+    Host->>Angular: Confirm upgrade
+    
+    Angular->>SubscriptionService: PUT /api/saas/subscriptions/{id}/upgrade
+    SubscriptionService->>Database: SELECT Subscription WHERE Id = {id}
+    Database-->>SubscriptionService: Current subscription
+    
+    SubscriptionService->>SubscriptionService: Calculate prorated amount
+    SubscriptionService->>Database: UPDATE Subscription SET EditionId = Premium
+    SubscriptionService->>InvoiceService: Generate upgrade invoice
+    
+    InvoiceService->>Database: INSERT INTO Invoices (prorated amount)
+    Database-->>InvoiceService: Invoice created
+    InvoiceService-->>SubscriptionService: InvoiceDto
+    
+    SubscriptionService-->>Angular: Updated subscription
+    Angular->>Angular: Refresh subscription list
+    Angular->>Host: Show success notification
+    
+    Note over Database: Tenant immediately has<br/>Premium features available<br/>(filtered by TenantId)
+```
+
+**Key Steps:**
+1. ✅ **Cross-Tenant Query** - Host sees all subscriptions
+2. ✅ **Edition Change** - Update subscription record
+3. ✅ **Prorated Billing** - Calculate upgrade charges
+4. ✅ **Immediate Effect** - Features available instantly
+5. ✅ **Invoice Generation** - Track billing changes
+
+---
+
+### 4. Tenant User Authentication Flow
+
+**User Journey: Tenant User Login with Multi-Tenancy**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Angular
+    participant AuthServer
+    participant IdentityService
+    participant SaasService
+    participant API
+    
+    User->>Angular: Navigate to /login
+    Angular->>Angular: Check if already authenticated
+    Angular->>AuthServer: Redirect to /connect/authorize
+    
+    AuthServer->>User: Show login form
+    User->>AuthServer: Enter username/email + password
+    
+    alt User enters tenant name
+        User->>AuthServer: Enter tenant: "acmecorp"
+        AuthServer->>SaasService: Resolve tenant by name
+        SaasService->>SaasService: SELECT * FROM AbpTenants WHERE Name = 'acmecorp'
+        SaasService-->>AuthServer: Tenant ID
+    else Subdomain resolution
+        Note over AuthServer: Extract from URL:<br/>acmecorp.moduletest.com
+        AuthServer->>SaasService: Resolve tenant by subdomain
+        SaasService-->>AuthServer: Tenant ID
+    end
+    
+    AuthServer->>IdentityService: Validate credentials
+    Note over IdentityService: Switch to tenant context<br/>Query: TenantId = tenant.Id
+    IdentityService->>IdentityService: SELECT * FROM AbpUsers<br/>WHERE TenantId = tenant.Id<br/>AND UserName = username
+    
+    alt Valid credentials
+        IdentityService-->>AuthServer: User validated
+        AuthServer->>AuthServer: Generate JWT with claims
+        Note over AuthServer: Claims include:<br/>- sub: user.Id<br/>- tenant_id: tenant.Id<br/>- tenant_name: "acmecorp"
+        AuthServer->>Angular: Redirect with auth code
+        Angular->>AuthServer: Exchange code for tokens
+        AuthServer-->>Angular: access_token + id_token
+        
+        Angular->>Angular: Store tokens
+        Angular->>Angular: Extract tenant from JWT
+        Angular->>API: Request with Bearer token
+        Note over API: Extract tenant_id from JWT<br/>Set CurrentTenant.Id
+        
+        API->>API: Process request in tenant context
+        API->>API: Query: WHERE TenantId = CurrentTenant.Id
+        API-->>Angular: Tenant-specific data
+        Angular->>User: Display dashboard
+    else Invalid credentials
+        IdentityService-->>AuthServer: Authentication failed
+        AuthServer->>User: Show error message
+    end
+```
+
+**Key Steps:**
+1. ✅ **Tenant Resolution** - From name, subdomain, or URL
+2. ✅ **Context Switch** - Identity service queries tenant users only
+3. ✅ **JWT Claims** - Token includes tenant information
+4. ✅ **Automatic Filtering** - All API calls filtered by tenant
+5. ✅ **Data Isolation** - User sees only their tenant's data
+
+---
+
+### 5. Task Management with Multi-Tenancy Flow
+
+**User Journey: Tenant User Creates and Manages Tasks**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Angular
+    participant WebGateway
+    participant TaskService
+    participant Database
+    
+    User->>Angular: Navigate to /tasks
+    Note over Angular: JWT contains tenant_id: "abc-123"
+    
+    Angular->>WebGateway: GET /api/tasks (Bearer token)
+    WebGateway->>WebGateway: Extract tenant from JWT
+    WebGateway->>WebGateway: Set __tenant header
+    WebGateway->>TaskService: Forward request
+    
+    TaskService->>TaskService: Resolve tenant from header
+    TaskService->>TaskService: Set CurrentTenant.Id = "abc-123"
+    TaskService->>Database: SELECT * FROM Tasks<br/>WHERE TenantId = 'abc-123'
+    Database-->>TaskService: Tenant's tasks
+    TaskService-->>WebGateway: TaskDto[]
+    WebGateway-->>Angular: Tasks
+    
+    Angular->>User: Display task list
+    
+    User->>Angular: Click "Create Task"
+    Angular->>Angular: Show task form modal
+    User->>Angular: Fill form (title, description, assignee, priority)
+    
+    User->>Angular: Submit form
+    Angular->>WebGateway: POST /api/tasks (Bearer token)
+    WebGateway->>TaskService: Forward with __tenant header
+    
+    TaskService->>TaskService: CurrentTenant.Id = "abc-123"
+    TaskService->>TaskService: Create task entity
+    Note over TaskService: Task.TenantId automatically<br/>set to CurrentTenant.Id
+    TaskService->>Database: INSERT INTO Tasks<br/>(TenantId='abc-123', Title=..., ...)
+    Database-->>TaskService: Task created
+    
+    TaskService-->>WebGateway: TaskDto
+    WebGateway-->>Angular: Created task
+    
+    Angular->>Angular: Update tasks signal
+    Angular->>User: Show success notification
+    Angular->>User: Task appears in list
+    
+    Note over Database: Other tenants cannot see<br/>this task (filtered by TenantId)
+```
+
+**Key Steps:**
+1. ✅ **JWT Authentication** - Token contains tenant ID
+2. ✅ **Gateway Forwarding** - Tenant header propagated
+3. ✅ **Automatic Context** - Service sets CurrentTenant
+4. ✅ **Query Filtering** - Only tenant's tasks returned
+5. ✅ **Automatic Assignment** - TenantId set on insert
+6. ✅ **Data Isolation** - Other tenants excluded
+
+---
+
+### 6. Cross-Tenant Reporting Flow (Host Only)
+
+**User Journey: Host Generates System-Wide Analytics**
+
+```mermaid
+sequenceDiagram
+    participant Host
+    participant Angular
+    participant SaasService
+    participant Database
+    
+    Host->>Angular: Navigate to /host-admin/analytics
+    Angular->>Angular: Verify host permission
+    
+    Angular->>SaasService: GET /api/saas/analytics/summary
+    Note over SaasService: Host context: CurrentTenant.Id = null
+    
+    SaasService->>SaasService: Check host permission
+    SaasService->>SaasService: Disable IMultiTenant filter
+    
+    par Query All Subscriptions
+        SaasService->>Database: SELECT COUNT(*) FROM Subscriptions<br/>GROUP BY Status
+        Database-->>SaasService: Subscription stats
+    and Query All Invoices
+        SaasService->>Database: SELECT SUM(Amount) FROM Invoices<br/>WHERE Status = 'Paid'
+        Database-->>SaasService: Revenue total
+    and Query All Tenants
+        SaasService->>Database: SELECT COUNT(*) FROM AbpTenants<br/>WHERE IsActive = true
+        Database-->>SaasService: Active tenant count
+    end
+    
+    SaasService->>SaasService: Aggregate statistics
+    SaasService-->>Angular: AnalyticsSummaryDto
+    
+    Angular->>Angular: Render charts/graphs
+    Angular->>Host: Display system-wide analytics
+    
+    Host->>Angular: Filter by date range
+    Angular->>SaasService: GET /api/saas/analytics/summary?from=...&to=...
+    SaasService->>Database: Query with date filters (all tenants)
+    Database-->>SaasService: Filtered stats
+    SaasService-->>Angular: Updated analytics
+    Angular->>Host: Update visualizations
+```
+
+**Key Steps:**
+1. ✅ **Host Context** - No tenant filtering
+2. ✅ **Disable Filter** - Explicitly disable `IMultiTenant`
+3. ✅ **Cross-Tenant Queries** - Aggregate all tenant data
+4. ✅ **Permission Check** - Only host admins allowed
+5. ✅ **Parallel Queries** - Efficient data gathering
+
+---
+
+### 7. Tenant Deactivation/Suspension Flow
+
+**User Journey: Host Suspends Tenant for Non-Payment**
+
+```mermaid
+sequenceDiagram
+    participant Host
+    participant Angular
+    participant SaasService
+    participant SubscriptionService
+    participant Database
+    participant TenantUser
+    participant API
+    
+    Host->>Angular: Navigate to /host-admin/subscriptions
+    Angular->>SaasService: GET /api/saas/subscriptions?status=Overdue
+    SaasService->>Database: Query overdue subscriptions (all tenants)
+    Database-->>SaasService: Overdue list
+    SaasService-->>Angular: SubscriptionDto[]
+    Angular->>Host: Display overdue subscriptions
+    
+    Host->>Angular: Select "AcmeCorp" subscription
+    Host->>Angular: Click "Suspend Tenant"
+    Angular->>Angular: Show confirmation dialog
+    
+    Host->>Angular: Confirm suspension
+    Angular->>SaasService: POST /api/saas/tenants/{id}/suspend
+    
+    SaasService->>Database: SELECT * FROM AbpTenants WHERE Id = {id}
+    Database-->>SaasService: Tenant entity
+    
+    SaasService->>SaasService: Tenant.Deactivate()
+    SaasService->>Database: UPDATE AbpTenants SET IsActive = false
+    
+    SaasService->>SubscriptionService: Suspend active subscription
+    SubscriptionService->>Database: UPDATE Subscriptions SET Status = Suspended
+    
+    SaasService-->>Angular: Tenant suspended
+    Angular->>Host: Show success notification
+    
+    Note over TenantUser,API: Meanwhile, tenant user tries to access
+    
+    TenantUser->>Angular: Try to login
+    Angular->>AuthServer: Authentication request
+    AuthServer->>SaasService: Check tenant status
+    SaasService->>Database: SELECT IsActive FROM AbpTenants
+    Database-->>SaasService: IsActive = false
+    SaasService-->>AuthServer: Tenant suspended
+    AuthServer-->>Angular: Authentication denied
+    Angular->>TenantUser: Show "Tenant suspended" message
+    
+    alt Existing session
+        TenantUser->>API: API request with valid JWT
+        API->>API: Extract tenant from JWT
+        API->>SaasService: Verify tenant status
+        SaasService-->>API: Tenant suspended
+        API-->>TenantUser: 403 Forbidden
+        Angular->>TenantUser: Redirect to suspension page
+    end
+```
+
+**Key Steps:**
+1. ✅ **Overdue Detection** - Query subscriptions by status
+2. ✅ **Tenant Deactivation** - Set IsActive = false
+3. ✅ **Subscription Suspension** - Update status
+4. ✅ **Login Blocked** - Prevent new sessions
+5. ✅ **API Blocked** - Reject existing sessions
+6. ✅ **User Notification** - Display suspension message
+
+---
+
 ## 🔄 Tenant Provisioning Process
 
 ### Complete Tenant Onboarding Flow
